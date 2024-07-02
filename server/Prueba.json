@@ -8,3 +8,6 @@
 {"nombre":"Kassia","apellido":"Crevagh","dni":"58232-0718","edad":8,"genero":"Female","telefono":"382-395-7897","direccion":"Suite 76","email":"kcrevagh7@flickr.com","fecha_nacimiento":"31/3/1988","club":"Rooxo","telefono_emergencia":"859-694-1148","prestador_servicio_emergencia":"Jazzy","habilitado":true},
 {"nombre":"Viviyan","apellido":"Schankel","dni":"50436-3501","edad":9,"genero":"Female","telefono":"548-636-3882","direccion":"Suite 43","email":"vschankel8@mtv.com","fecha_nacimiento":"14/7/2018","club":"Wikizz","telefono_emergencia":"480-519-5145","prestador_servicio_emergencia":"Twitterbeat","habilitado":true},
 {"nombre":"Michelina","apellido":"Malam","dni":"0187-5183","edad":10,"genero":"Female","telefono":"313-991-0968","direccion":"Apt 1641","email":"mmalam9@nps.gov","fecha_nacimiento":"31/7/2005","club":"Twitterbridge","telefono_emergencia":"393-908-1699","prestador_servicio_emergencia":"Twinte","habilitado":true}]
+
+
+[{"nombre":"Club Atletico Boca Juniors","direccion":"Brandsen 805, Cdad. Autónoma de Buenos Aires"},{"nombre":"Club Ferro Carril Oeste","direccion":"Av. Avellaneda 1240, Cdad. Autónoma de Buenos Aires"}]
