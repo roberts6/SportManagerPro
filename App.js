@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CrearJugador from './client/views/CrearJugador';
 import Home from './client/views/Home';
-import Jugadores from './client/views/Jugador';
+import Jugadores from './client/views/Jugadores.js';
 import Clubes from './client/views/Clubes.js';
 import store from './server/Store/Store.js';
 import { Provider } from "react-redux";

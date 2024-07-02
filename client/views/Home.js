@@ -1,11 +1,8 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import { useGetJugadoresQuery } from '../../server/servicesFireBase/services';
-
 
 export default function Home({ navigation }) {
-    const {data} = useGetJugadoresQuery()
-    console.log("esta es la data de firebase", data)
+    
   return (
       <View>
         <Button title="Jugadores" onPress={() => navigation.navigate('Jugadores')} />

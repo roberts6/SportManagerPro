@@ -6,7 +6,7 @@ export const ApiJugadores = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: bd_url }),
     endpoints: (builder) => ({
         getJugadores: builder.query({
-            query: () => `Jugadores.json` // Endpoint para la colección de jugadores
+            query: () => `Jugadores.json?orderBy="id"` // Endpoint para la colección de jugadores
         }),
         getClubes: builder.query({
             query: () => `Clubes.json` // Endpoint para la colección de clubes

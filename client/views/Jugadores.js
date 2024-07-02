@@ -105,7 +105,7 @@ const Jugadores = () => {
     const navigation = useNavigation();
     
     const { data, error, isLoading } = useGetJugadoresQuery(); 
-    console.log("esta es la información que trae FireBase", data) // devuelve un null. Revisar!! 
+    console.log("esta es la información que trae FireBase", data) // devuelve un undefined. Revisar!! 
 
     useEffect(() => {
         if (data) { 
