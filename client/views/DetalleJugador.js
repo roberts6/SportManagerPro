@@ -13,7 +13,7 @@ const DetalleJugador = ({ route }) => { // es el objeto que envía handlePlayerP
     return (
         <View style={styles.container}>
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{jugador.nombre} {jugador.apellido}</Text>
-            <Image source={require('')} style = {styles.image}/> 
+            <Image source={require('../imagenes/avatarX.png')} style = {styles.image}/> 
             <Text style={styles.text}>Club: {jugador.club}</Text>
             <Text style={styles.text}>Categoría: {jugador.categoria}</Text>
             <Text style={styles.text}>Edad: {jugador.edad}</Text>

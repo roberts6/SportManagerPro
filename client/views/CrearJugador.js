@@ -121,7 +121,7 @@ const CrearJugador = () => {
                 habilitado: false,
             });
             alert('Jugador guardado exitosamente');
-            console.log('Jugador guardado con ID:', docRef.id);
+            console.log('Jugador guardado con ID:', docRef.dni);
         } catch (error) {
             console.error("Error añadiendo el documento: ", error);
             alert('Hubo un error guardando el jugador');

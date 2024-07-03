@@ -105,7 +105,6 @@ const Jugadores = () => {
     const navigation = useNavigation();
     
     const { data, error, isLoading } = useGetJugadoresQuery(); 
-    console.log("esta es la información que trae FireBase", data) // devuelve un undefined. Revisar!! 
 
     useEffect(() => {
         if (data) { 
@@ -116,7 +115,7 @@ const Jugadores = () => {
 
             if (habilitadoFilter !== null) {
                 filteredData = filteredData.filter(jugador =>
-                    (habilitadoFilter === 0 && jugador.habilitado === 0) || jugador.habilitado === habilitadoFilter
+                    (habilitadoFilter === false && jugador.habilitado === false) || jugador.habilitado === habilitadoFilter
                 );
             }
 
@@ -139,7 +138,7 @@ const Jugadores = () => {
     }
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <FiltroNombre search={search} setSearch={setSearch} />
             <FiltroClub searchClub={searchClub} setSearchClub={setSearchClub} />
             <FiltroHabilitado setHabilitadoFilter={setHabilitadoFilter} />
@@ -151,15 +150,15 @@ const Jugadores = () => {
             ) : (
                 <FlatList
                     data={filteredNombre}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item) => item.dni.toString()}
                     renderItem={({ item }) => (
                         <Pressable onPress={() => handlePlayerPress(item)}>
                             <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', padding: 10 }}>
                                 <Text style={{ fontWeight: 'bold' }}>Club: {item.club}</Text>
-                                <Text style={{ fontSize: 16, color: 'black' }}>{item.nombre} - {item.apellido}</Text>
+                                <Text style={{ fontSize: 16, color: 'black' }}>{item.nombre}  {item.apellido}</Text>
                                 <Text>Edad: {item.edad}</Text>
                                 <Text>Género: {item.genero}</Text>
-                                <Text>Habilitado: <Text style={{ fontWeight: 'bold' }}>{item.habilitado === 1 ? "Sí" : "No"}</Text></Text>
+                                <Text>Habilitado: <Text style={{ fontWeight: 'bold' }}>{item.habilitado === true ? "Sí" : "No"}</Text></Text>
                             </View>
                         </Pressable>
                     )}

@@ -6,6 +6,8 @@ import CrearJugador from './client/views/CrearJugador';
 import Home from './client/views/Home';
 import Jugadores from './client/views/Jugadores.js';
 import Clubes from './client/views/Clubes.js';
+import DetalleJugador from './client/views/DetalleJugador.js';
+import Estadisticas from './client/views/Estadisticas.js';
 import store from './server/Store/Store.js';
 import { Provider } from "react-redux";
 
@@ -20,6 +22,8 @@ export default function App() {
         <Stack.Screen name="Agregar Jugador" component={CrearJugador} />
         <Stack.Screen name="Clubes" component={Clubes} />
         <Stack.Screen name="Jugadores" component={Jugadores} />
+        <Stack.Screen name="Información Jugador" component={DetalleJugador} />
+        <Stack.Screen name="Estadísticas" component={Estadisticas} />
       </Stack.Navigator>
       </Provider>
     </NavigationContainer>

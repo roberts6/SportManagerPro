@@ -6,8 +6,8 @@ const FiltroHabilitado = ({ setHabilitadoFilter }) => {
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Text>Habilitado?</Text>
             <Button title="Todos" onPress={() => setHabilitadoFilter(null)} />
-            <Button title="Habilitados" onPress={() => setHabilitadoFilter(1)} />
-            <Button title="NO Habilitados" onPress={() => setHabilitadoFilter(0)} />
+            <Button title="Habilitados" onPress={() => setHabilitadoFilter(true)} />
+            <Button title="NO Habilitados" onPress={() => setHabilitadoFilter(false)} />
         </View>
     );
 };

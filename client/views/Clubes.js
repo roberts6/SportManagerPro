@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { useGetClubesQuery } from '../../server/FireBaseDB.js'; 
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { useGetClubesQuery } from '../../server/servicesFireBase/services.js'; 
 
 const Clubes = () => {
   const { data, error, isLoading } = useGetClubesQuery();
@@ -20,7 +20,9 @@ const Clubes = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.itemText}>{item.clave}</Text>
+            <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Escudo_del_Club_Ferro_Carril_Oeste.svg' }} style = {styles.image} onError={(error) => console.log('Image Load Error:', error.nativeEvent.error)}/>
+            <Text style={styles.itemText}>{item.nombre}</Text>
+            <Text style={styles.itemText}>{item.direccion}</Text>
             {/* Puedo renderizar otras propiedades del club acá */}
           </View>
         )}
@@ -55,6 +57,11 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
   },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 15
+  }
 });
 
 export default Clubes;
