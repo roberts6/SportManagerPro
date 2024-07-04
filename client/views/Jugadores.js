@@ -89,6 +89,7 @@
 
 // export default Jugadores;
 
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Pressable, ActivityIndicator } from 'react-native';
 import FiltroNombre from '../filtros/filtroNombre.js';
@@ -150,7 +151,7 @@ const Jugadores = () => {
             ) : (
                 <FlatList
                     data={filteredNombre}
-                    keyExtractor={(item) => item.dni.toString()}
+                    keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                         <Pressable onPress={() => handlePlayerPress(item)}>
                             <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', padding: 10 }}>
@@ -169,4 +170,3 @@ const Jugadores = () => {
 };
 
 export default Jugadores;
-

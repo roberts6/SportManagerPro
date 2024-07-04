@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
+import { View, Button, TextInput, ScrollView, StyleSheet, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import { db } from '../../server/credencialesFireBase';
-// import { collection, addDoc } from 'firebase/firestore';
-
+import { calcularCategoria } from '../features/utilidades/calcularCategoriaHandball.js';
+import { calcularEdad } from '../features/utilidades/calcularEdad.js';
+import { usePostJugadorMutation } from '../../server/servicesFireBase/services.js';
 
 const CrearJugador = () => {
-    const [dato, setDato] = useState({
+    const initialState = {
+        id: '',
         nombre: '',
         apellido: '',
         dni: '',
@@ -21,14 +22,16 @@ const CrearJugador = () => {
         prestador_servicio_emergencia: '',
         habilitado: false,
         mostrarClubesDropdown: false
-    });
+    };
 
+    const [dato, setDato] = useState(initialState);
     const [mostrarGenero, setMostrarGenero] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [clubes, setClubes] = useState([]);
     const [fecha, setFecha] = useState(new Date());
 
     const handleOnChangeInput = (clave, valor) => {
+        //console.log('Actualizando estado:', clave, valor);
         setDato((dato) => ({ ...dato, [clave]: valor }));
     };
 
@@ -38,15 +41,28 @@ const CrearJugador = () => {
     };
 
     const seleccionarFecha = (event, selectedDate) => {
-        setShowDatePicker(false);
-        if (selectedDate) {
-            const offsetDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
-            const fechaFormateada = offsetDate.toISOString().split('T')[0];
-            const [year, month, day] = fechaFormateada.split('-');
-            const formattedDate = `${day}/${month}/${year}`;
-            setFecha(selectedDate);
-            handleOnChangeInput('fecha_nacimiento', formattedDate);
+        // Maneja la cancelación del DatePicker en Android
+        if (event.type === 'dismissed') {
+            setShowDatePicker(false);
+            return;
         }
+
+        // Si la fecha está definida, actualiza el estado
+        const currentDate = selectedDate || fecha;
+        setShowDatePicker(false);
+        setFecha(currentDate);
+
+        //console.log('Fecha seleccionada:', currentDate);
+
+        // Convierte la fecha a una cadena en formato YYYY-MM-DD
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        //console.log('Fecha formateada:', formattedDate);
+
+        handleOnChangeInput('fecha_nacimiento', formattedDate);
+    };
+
+    const generateRandomId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
     };
 
     const validarEmail = (email) => {
@@ -54,62 +70,16 @@ const CrearJugador = () => {
         return re.test(String(email).toLowerCase());
     };
 
+    const [triggerPostJugador, result] = usePostJugadorMutation();
+
     const guardarJugadorNuevo = async () => {
-        if (dato.nombre === '') {
-            alert('Por favor, ingresa un nombre válido.');
-            return;
-        }
-
-        if (dato.apellido === '') {
-            alert('Por favor, ingresa un apellido válido.');
-            return;
-        }
-
-        if (dato.edad === '' || isNaN(dato.edad) || parseInt(dato.edad) <= 0) {
-            alert('Por favor, ingresa una edad válida.');
-            return;
-        }
-
-        if (dato.genero === '') {
-            alert('Por favor, selecciona un género.');
-            return;
-        }
-
-        if (dato.telefono === '' || dato.telefono.length < 10) {
-            alert('Por favor, ingresa un número de teléfono válido.');
-            return;
-        }
-
-        if (dato.direccion === '') {
-            alert('Por favor, ingresa una dirección válida.');
-            return;
-        }
-
-        if (dato.email === '' || !validarEmail(dato.email)) {
-            alert('Por favor, ingresa un email válido.');
-            return;
-        }
-
-        if (dato.fecha_nacimiento === '') {
-            alert('Por favor, ingresa una fecha de nacimiento válida.');
-            return;
-        }
-
-        if (dato.telefono_emergencia === '' || dato.telefono_emergencia.length < 10) {
-            alert('Por favor, ingresa un número de teléfono de emergencia válido.');
-            return;
-        }
-
-        if (dato.prestador_servicio_emergencia === '') {
-            alert('Por favor, ingresa un prestador de servicio de emergencia válido.');
-            return;
-        }
-
         try {
-            const docRef = await addDoc(collection(db, 'jugador'), {
+            const jugador = {
+                id: generateRandomId(),
                 nombre: dato.nombre,
                 apellido: dato.apellido,
-                edad: dato.edad,
+                edad: calcularEdad(dato.fecha_nacimiento),
+                categoria: calcularCategoria(dato.fecha_nacimiento),
                 genero: dato.genero,
                 telefono: dato.telefono,
                 direccion: dato.direccion,
@@ -118,15 +88,24 @@ const CrearJugador = () => {
                 club: dato.club,
                 telefono_emergencia: dato.telefono_emergencia,
                 prestador_servicio_emergencia: dato.prestador_servicio_emergencia,
-                habilitado: false,
-            });
+                habilitado: false
+            };
+            await triggerPostJugador(jugador);
             alert('Jugador guardado exitosamente');
-            console.log('Jugador guardado con ID:', docRef.dni);
+            //console.log('Jugador guardado exitosamente', jugador);
+
+            // Reinicia el formulario a valores vacíos
+            setDato(initialState);
+
+            // Reinicia otros estados si es necesario
+            setFecha(new Date());
+            setShowDatePicker(false);
+            setMostrarGenero(false);
+            setClubes([]);
         } catch (error) {
-            console.error("Error añadiendo el documento: ", error);
-            alert('Hubo un error guardando el jugador');
+            alert('Ups!! Hubo un error. No pudimos guardar la información');
+            //console.error('Error al guardar el jugador:', error);
         }
-        console.log(`Este es el jugador: ${JSON.stringify(dato)}`);
     };
 
     return (
@@ -150,14 +129,6 @@ const CrearJugador = () => {
                     placeholder='DNI'
                     onChangeText={(valor) => handleOnChangeInput('dni', valor)}
                     value={dato.dni}
-                    keyboardType='numeric'
-                />
-            </View>
-            <View style={styles.input}>
-                <TextInput
-                    placeholder='Edad'
-                    onChangeText={(valor) => handleOnChangeInput('edad', valor)}
-                    value={dato.edad}
                     keyboardType='numeric'
                 />
             </View>
@@ -211,6 +182,9 @@ const CrearJugador = () => {
                 )}
             </View>
             <View style={styles.input}>
+                <Text style={{color: "black"}}>Edad {dato.edad}</Text>
+            </View>
+            <View style={styles.input}>
                 <Button
                     title={dato.club !== '' ? dato.club : 'Club'} 
                     onPress={() => handleOnChangeInput('mostrarClubesDropdown', !dato.mostrarClubesDropdown)}
@@ -234,7 +208,7 @@ const CrearJugador = () => {
             <View style={styles.input}>
                 <TextInput
                     placeholder='Prestador de Servicio de Emergencia'
-                    onChangeText={(valor) => handleOnChangeInput('prestador_servicio_emergencia', valor)}
+                    onChangeText={(valor) => handleOnChangeInput('prestador_servicio_emergencia', valor.toUpperCase())}
                     value={dato.prestador_servicio_emergencia}
                 />
             </View>
@@ -271,3 +245,4 @@ const styles = StyleSheet.create({
 });
 
 export default CrearJugador;
+
