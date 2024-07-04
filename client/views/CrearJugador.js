@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, TextInput, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, Button, TextInput, ScrollView, StyleSheet, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { calcularCategoria } from '../features/utilidades/calcularCategoriaHandball.js';
 import { calcularEdad } from '../features/utilidades/calcularEdad.js';
@@ -48,9 +48,16 @@ const CrearJugador = () => {
         }
 
         // Si la fecha está definida, actualiza el estado
+        // const currentDate = selectedDate || fecha;
+        // setShowDatePicker(false);
+        // setFecha(currentDate);
         const currentDate = selectedDate || fecha;
-        setShowDatePicker(false);
-        setFecha(currentDate);
+    if(Platform.OS === 'ios') {
+        setShowDatePicker(true); // Para iOS
+    } else {
+        setShowDatePicker(false); // Para Android
+    }
+    setFecha(currentDate);
 
         //console.log('Fecha seleccionada:', currentDate);
 
@@ -110,11 +117,12 @@ const CrearJugador = () => {
 
     return (
         <ScrollView>
-            <View style={styles.input}>
+            <View style={[styles.input, {marginTop: 30}]}>
                 <TextInput
                     placeholder='Nombre'
                     onChangeText={(valor) => handleOnChangeInput('nombre', valor)}
                     value={dato.nombre}
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -122,6 +130,7 @@ const CrearJugador = () => {
                     placeholder='Apellido'
                     onChangeText={(valor) => handleOnChangeInput('apellido', valor)}
                     value={dato.apellido}
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -130,6 +139,7 @@ const CrearJugador = () => {
                     onChangeText={(valor) => handleOnChangeInput('dni', valor)}
                     value={dato.dni}
                     keyboardType='numeric'
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -150,6 +160,7 @@ const CrearJugador = () => {
                     onChangeText={(valor) => handleOnChangeInput('telefono', valor)}
                     value={dato.telefono}
                     keyboardType='phone-pad'
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -157,6 +168,7 @@ const CrearJugador = () => {
                     placeholder='Dirección'
                     onChangeText={(valor) => handleOnChangeInput('direccion', valor)}
                     value={dato.direccion}
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -165,6 +177,7 @@ const CrearJugador = () => {
                     onChangeText={(valor) => handleOnChangeInput('email', valor)}
                     value={dato.email}
                     keyboardType='email-address'
+                    style={styles.placeholder}
                 />
             </View>
             <View style={[styles.input, styles.fecha]}>
@@ -203,6 +216,7 @@ const CrearJugador = () => {
                     onChangeText={(valor) => handleOnChangeInput('telefono_emergencia', valor)}
                     value={dato.telefono_emergencia}
                     keyboardType='numeric'
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.input}>
@@ -210,6 +224,7 @@ const CrearJugador = () => {
                     placeholder='Prestador de Servicio de Emergencia'
                     onChangeText={(valor) => handleOnChangeInput('prestador_servicio_emergencia', valor.toUpperCase())}
                     value={dato.prestador_servicio_emergencia}
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.buttonContainer}>
@@ -226,8 +241,12 @@ const CrearJugador = () => {
 const styles = StyleSheet.create({
     input: {
         marginVertical: 10,
+        fontSize: 20,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    placeholder:{
+        fontSize:20
     },
     fecha: {
         textAlign: "center",
