@@ -26,6 +26,7 @@ const DetalleJugador = ({ route }) => { // es el objeto que envía handlePlayerP
             <Text style={styles.text}>Email: {jugador.email}</Text>
             <Text style={styles.text}>Teléfono: {jugador.telefono}</Text>
             <Text style={styles.text}>Dirección: {jugador.direccion}</Text>
+            <Text style={styles.text}>Teléfono emergencia: {jugador.telefono_emergencia}</Text>
             <Text style={styles.text}>Obra Social: {jugador.prestador_servicio_emergencia}</Text>
             <View style={[jugador.habilitado === 0 ? { display: 'none' } : styles.botonContainer]}>
                 <Button

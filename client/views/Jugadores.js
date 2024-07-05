@@ -155,9 +155,10 @@ const Jugadores = () => {
                     renderItem={({ item }) => (
                         <Pressable onPress={() => handlePlayerPress(item)}>
                             <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', padding: 10 }}>
-                                <Text style={{ fontWeight: 'bold' }}>Club: {item.club}</Text>
+                                <Text style={{ fontWeight: 'bold' }}>{item.club}</Text>
                                 <Text style={{ fontSize: 16, color: 'black' }}>{item.nombre}  {item.apellido}</Text>
                                 <Text>Edad: {item.edad}</Text>
+                                <Text>Categoría: {item.categoria}</Text>
                                 <Text>Género: {item.genero}</Text>
                                 <Text>Habilitado: <Text style={{ fontWeight: 'bold' }}>{item.habilitado === true ? "Sí" : "No"}</Text></Text>
                             </View>

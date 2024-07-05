@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { calcularCategoria } from '../features/utilidades/calcularCategoriaHandball.js';
 import { calcularEdad } from '../features/utilidades/calcularEdad.js';
 import { usePostJugadorMutation } from '../../server/servicesFireBase/services.js';
+import { useGetClubesQuery } from '../../server/servicesFireBase/services.js';
 
 const CrearJugador = () => {
     const initialState = {
@@ -40,31 +41,50 @@ const CrearJugador = () => {
         setMostrarGenero(false);
     };
 
+    // const seleccionarFecha = (event, selectedDate) => {
+    //     // Maneja la cancelación del DatePicker en Android
+    //     if (event.type === 'dismissed') {
+    //         setShowDatePicker(false);
+    //         return;
+    //     }
+
+    //     // Si la fecha está definida, actualiza el estado
+    //     const currentDate = selectedDate || fecha;
+    //     if(Platform.OS === 'ios') {
+    //         setShowDatePicker(true); // Para iOS
+    //     } else {
+    //         setShowDatePicker(false); // Para Android
+    //     }
+    //     setFecha(currentDate);
+
+    //     //console.log('Fecha seleccionada:', currentDate);
+
+    //     // Convierte la fecha a una cadena en formato YYYY-MM-DD
+    //     const formattedDate = currentDate.toISOString().split('T')[0];
+    //     //console.log('Fecha formateada:', formattedDate);
+
+    //     handleOnChangeInput('fecha_nacimiento', formattedDate);
+    // };
     const seleccionarFecha = (event, selectedDate) => {
         // Maneja la cancelación del DatePicker en Android
         if (event.type === 'dismissed') {
             setShowDatePicker(false);
             return;
         }
-
-        // Si la fecha está definida, actualiza el estado
-        // const currentDate = selectedDate || fecha;
-        // setShowDatePicker(false);
-        // setFecha(currentDate);
+    
+        // Ajusta la fecha para evitar cambios inesperados
         const currentDate = selectedDate || fecha;
-    if(Platform.OS === 'ios') {
-        setShowDatePicker(true); // Para iOS
-    } else {
-        setShowDatePicker(false); // Para Android
-    }
-    setFecha(currentDate);
-
-        //console.log('Fecha seleccionada:', currentDate);
-
+        const updatedDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60 * 1000);
+    
+        if (Platform.OS === 'ios') {
+            setShowDatePicker(true); // Para iOS
+        } else {
+            setShowDatePicker(false); // Para Android
+        }
+        setFecha(updatedDate);
+    
         // Convierte la fecha a una cadena en formato YYYY-MM-DD
-        const formattedDate = currentDate.toISOString().split('T')[0];
-        //console.log('Fecha formateada:', formattedDate);
-
+        const formattedDate = updatedDate.toISOString().split('T')[0];
         handleOnChangeInput('fecha_nacimiento', formattedDate);
     };
 
@@ -78,8 +98,59 @@ const CrearJugador = () => {
     };
 
     const [triggerPostJugador, result] = usePostJugadorMutation();
+    const {data: dataClubes} = useGetClubesQuery()
 
     const guardarJugadorNuevo = async () => {
+        const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email, club, telefono_emergencia, prestador_servicio_emergencia } = dato;
+
+    if (!nombre) {
+        alert('Por favor ingresá tu nombre.');
+    }
+
+    if (!apellido) {
+        alert('Por favor ingresá tu apellido.');
+    }
+
+    if (!dni) {
+        alert('Por favor ingresá tu dni.');
+    }
+
+    if (!fecha_nacimiento) {
+        alert('Por favor ingresá tu fecha de nacimiento.');
+    }
+
+    if (!genero) {
+        alert('Por favor elegí tu género.');
+    }
+
+    if (!telefono || !telefono_emergencia) {
+        alert('Por favor ingresá tu teléfono.');
+    } else if (
+        isNaN(Number(telefono)) || telefono.length <= 9 ||
+        isNaN(Number(telefono_emergencia)) || telefono_emergencia.length <= 9
+    ) {
+        alert('El teléfono debe ser numérico y tener al menos 10 dígitos.');
+        return;
+    }
+    
+
+    if (!direccion) {
+        alert('Por favor ingresá tu dirección.');
+    }
+
+    if (!validarEmail(email)) {
+        alert('Por favor ingrese un email válido.');
+        return;
+    }
+
+    if (!club) {
+        alert('Por favor ingresá en qué club jugás.');
+    }
+
+    if (!prestador_servicio_emergencia) {
+        alert('Por favor ingresá cuál es tu prestador de servicios de salud.');
+    }
+
         try {
             const jugador = {
                 id: generateRandomId(),
@@ -195,20 +266,13 @@ const CrearJugador = () => {
                 )}
             </View>
             <View style={styles.input}>
-                <Text style={{color: "black"}}>Edad {dato.edad}</Text>
-            </View>
-            <View style={styles.input}>
                 <Button
                     title={dato.club !== '' ? dato.club : 'Club'} 
                     onPress={() => handleOnChangeInput('mostrarClubesDropdown', !dato.mostrarClubesDropdown)}
                 />
-                {dato.mostrarClubesDropdown && (
-                    <View>
-                        {clubes.map((club) => (
-                            <Button title={club.nombre} key={club.id} onPress={() => handleOnChangeInput('club', club.nombre)} />
-                        ))}
-                    </View>
-                )}
+                {dato.mostrarClubesDropdown && dataClubes.map((club) => (
+                    <Button title={club.nombre} key={club.clubId} onPress={() => handleOnChangeInput('club', club.nombre)} />
+                ))}
             </View>
             <View style={styles.input}>
                 <TextInput
