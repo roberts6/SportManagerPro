@@ -31,6 +31,7 @@ const CrearJugador = () => {
     const [clubes, setClubes] = useState([]);
     const [fecha, setFecha] = useState(new Date());
 
+    // este handler recibe los cambios en cada input y almacena los valores en el objeto dato
     const handleOnChangeInput = (clave, valor) => {
         //console.log('Actualizando estado:', clave, valor);
         setDato((dato) => ({ ...dato, [clave]: valor }));
@@ -41,30 +42,6 @@ const CrearJugador = () => {
         setMostrarGenero(false);
     };
 
-    // const seleccionarFecha = (event, selectedDate) => {
-    //     // Maneja la cancelación del DatePicker en Android
-    //     if (event.type === 'dismissed') {
-    //         setShowDatePicker(false);
-    //         return;
-    //     }
-
-    //     // Si la fecha está definida, actualiza el estado
-    //     const currentDate = selectedDate || fecha;
-    //     if(Platform.OS === 'ios') {
-    //         setShowDatePicker(true); // Para iOS
-    //     } else {
-    //         setShowDatePicker(false); // Para Android
-    //     }
-    //     setFecha(currentDate);
-
-    //     //console.log('Fecha seleccionada:', currentDate);
-
-    //     // Convierte la fecha a una cadena en formato YYYY-MM-DD
-    //     const formattedDate = currentDate.toISOString().split('T')[0];
-    //     //console.log('Fecha formateada:', formattedDate);
-
-    //     handleOnChangeInput('fecha_nacimiento', formattedDate);
-    // };
     const seleccionarFecha = (event, selectedDate) => {
         // Maneja la cancelación del DatePicker en Android
         if (event.type === 'dismissed') {
@@ -101,6 +78,7 @@ const CrearJugador = () => {
     const {data: dataClubes} = useGetClubesQuery()
 
     const guardarJugadorNuevo = async () => {
+        // desestructuro los valores de "dato"
         const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email, club, telefono_emergencia, prestador_servicio_emergencia } = dato;
 
     if (!nombre) {
@@ -124,14 +102,13 @@ const CrearJugador = () => {
     }
 
     if (!telefono || !telefono_emergencia) {
-        alert('Por favor ingresá tu teléfono.');
+        alert('Por favor ingresa tu teléfono y teléfono de emergencia.');
     } else if (
-        isNaN(Number(telefono)) || telefono.length <= 9 ||
-        isNaN(Number(telefono_emergencia)) || telefono_emergencia.length <= 9
+        isNaN(Number(telefono)) || telefono.length < 10 ||
+        isNaN(Number(telefono_emergencia)) || telefono_emergencia.length < 10
     ) {
         alert('El teléfono debe ser numérico y tener al menos 10 dígitos.');
-        return;
-    }
+    }    
     
 
     if (!direccion) {
@@ -175,7 +152,7 @@ const CrearJugador = () => {
             // Reinicia el formulario a valores vacíos
             setDato(initialState);
 
-            // Reinicia otros estados si es necesario
+            // Reinicia el resto de los estados.
             setFecha(new Date());
             setShowDatePicker(false);
             setMostrarGenero(false);

@@ -23,6 +23,13 @@ export const ApiJugadores = createApi({
                 method: 'POST',
                 body: jugador
             }),
+        }),
+        putJugador: builder.mutation({
+            query: (jugador) => ({
+                url: 'Jugadores.json',
+                method: 'PUT',
+                body: jugador
+            }),
         })
     })
 });
@@ -32,5 +39,6 @@ export const {
     useGetClubesQuery,
     useGetJugadorByIdQuery,
     useGetJugadoresByClubQuery,
-    usePostJugadorMutation
+    usePostJugadorMutation,
+    usePutJugadorMutation
 } = ApiJugadores;
