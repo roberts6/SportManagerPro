@@ -50,18 +50,24 @@ const CrearJugador = () => {
         }
     
         // Ajusta la fecha para evitar cambios inesperados
-        const currentDate = selectedDate || fecha;
-        const updatedDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60 * 1000);
+        // const currentDate = selectedDate || fecha;
+        // const updatedDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60 * 1000);
+        const currentDate = selectedDate || date;
+        const normalizedDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                currentDate.getDate()
+                    );
     
         if (Platform.OS === 'ios') {
             setShowDatePicker(true); // Para iOS
         } else {
             setShowDatePicker(false); // Para Android
         }
-        setFecha(updatedDate);
+        setFecha(normalizedDate);
     
         // Convierte la fecha a una cadena en formato YYYY-MM-DD
-        const formattedDate = updatedDate.toISOString().split('T')[0];
+        const formattedDate = normalizedDate.toISOString().split('T')[0];
         handleOnChangeInput('fecha_nacimiento', formattedDate);
     };
 
@@ -83,36 +89,40 @@ const CrearJugador = () => {
 
     if (!nombre) {
         alert('Por favor ingresá tu nombre.');
+        return;
     }
 
     if (!apellido) {
         alert('Por favor ingresá tu apellido.');
+        return;
     }
 
     if (!dni) {
         alert('Por favor ingresá tu dni.');
+        return;
     }
 
     if (!fecha_nacimiento) {
         alert('Por favor ingresá tu fecha de nacimiento.');
+        return;
     }
 
     if (!genero) {
         alert('Por favor elegí tu género.');
+        return;
     }
 
-    if (!telefono || !telefono_emergencia) {
-        alert('Por favor ingresa tu teléfono y teléfono de emergencia.');
-    } else if (
-        isNaN(Number(telefono)) || telefono.length < 10 ||
-        isNaN(Number(telefono_emergencia)) || telefono_emergencia.length < 10
-    ) {
+    if (!telefono) {
+        alert('Por favor ingresá tu teléfono')
+        return;
+    } else if (isNaN(Number(telefono)) || telefono.length <= 9 ) {
         alert('El teléfono debe ser numérico y tener al menos 10 dígitos.');
-    }    
-    
+        return;
+    }
 
     if (!direccion) {
         alert('Por favor ingresá tu dirección.');
+        return;
     }
 
     if (!validarEmail(email)) {
@@ -122,10 +132,20 @@ const CrearJugador = () => {
 
     if (!club) {
         alert('Por favor ingresá en qué club jugás.');
+        return;
+    }
+
+    if (!telefono_emergencia) {
+        alert('Por favor ingresá un teléfono de emergencia')
+        return;
+    } else if (isNaN(Number(telefono_emergencia)) || telefono_emergencia.length <= 9) {
+        alert('El teléfono de emergencia debe ser numérico y tener al menos 10 dígitos.');
+        return;
     }
 
     if (!prestador_servicio_emergencia) {
         alert('Por favor ingresá cuál es tu prestador de servicios de salud.');
+        return;
     }
 
         try {
