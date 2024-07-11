@@ -15,8 +15,10 @@ const EditarDatos = () => {
 
     const guardarCambiosJugador = async () => {
         try {
-            await triggerPutJugador(datosJugador);
-            alert('Jugador editado exitosamente');
+            {/*revisar porque al guardar borra lal colección Jugadores*/}
+            // await triggerPutJugador(datosJugador);
+            // alert('Jugador editado exitosamente');
+            console.log("datos modificados:",datosJugador)
         } catch (error) {
             alert('Ups!! Hubo un error. No pudimos actualizar la información');
         }

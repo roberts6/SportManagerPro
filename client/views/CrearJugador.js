@@ -17,6 +17,8 @@ const CrearJugador = () => {
         telefono: '',
         direccion: '',
         email: '',
+        password: '',
+        confirmacionPassword: '',
         fecha_nacimiento: '',
         club: '',
         telefono_emergencia: '',
@@ -49,15 +51,13 @@ const CrearJugador = () => {
             return;
         }
     
-        // Ajusta la fecha para evitar cambios inesperados
-        // const currentDate = selectedDate || fecha;
-        // const updatedDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60 * 1000);
+        // Ajusta la fecha para evitar cambios por zona horaria
         const currentDate = selectedDate || date;
         const normalizedDate = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                currentDate.getDate()
-                    );
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate()
+                );
     
         if (Platform.OS === 'ios') {
             setShowDatePicker(true); // Para iOS
@@ -85,7 +85,7 @@ const CrearJugador = () => {
 
     const guardarJugadorNuevo = async () => {
         // desestructuro los valores de "dato"
-        const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email, club, telefono_emergencia, prestador_servicio_emergencia } = dato;
+        const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = dato;
 
     if (!nombre) {
         alert('Por favor ingresá tu nombre.');
@@ -99,11 +99,6 @@ const CrearJugador = () => {
 
     if (!dni) {
         alert('Por favor ingresá tu dni.');
-        return;
-    }
-
-    if (!fecha_nacimiento) {
-        alert('Por favor ingresá tu fecha de nacimiento.');
         return;
     }
 
@@ -129,6 +124,21 @@ const CrearJugador = () => {
         alert('Por favor ingrese un email válido.');
         return;
     }
+
+    if (!password || password.length <= 3) {
+        alert('Por favor ingresa un password mayor a 4 caracteres')
+        return;
+    }
+
+if (confirmacionPassword !== password) {
+    alert("La confirmación de tu password no es igual al password ingresado")
+    return;
+}
+
+if (!fecha_nacimiento) {
+    alert('Por favor ingresá tu fecha de nacimiento.');
+    return;
+}
 
     if (!club) {
         alert('Por favor ingresá en qué club jugás.');
@@ -159,6 +169,7 @@ const CrearJugador = () => {
                 telefono: dato.telefono,
                 direccion: dato.direccion,
                 email: dato.email,
+                password: dato.password,
                 fecha_nacimiento: dato.fecha_nacimiento,
                 club: dato.club,
                 telefono_emergencia: dato.telefono_emergencia,
@@ -248,6 +259,24 @@ const CrearJugador = () => {
                     style={styles.placeholder}
                 />
             </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Password'
+                    onChangeText={(valor) => handleOnChangeInput('password', valor)}
+                    value={dato.password || ''}
+                    style={styles.placeholder}
+                    secureTextEntry={true} 
+                />
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Confirmación Password'
+                    onChangeText={(valor) => handleOnChangeInput('confirmacionPassword', valor)}
+                    value={dato.confirmacionPassword || ''}
+                    style={styles.placeholder}
+                    secureTextEntry={true} 
+                />
+            </View>
             <View style={[styles.input, styles.fecha]}>
                 <Button
                     title={dato.fecha_nacimiento !== '' ? dato.fecha_nacimiento : 'Fecha de Nacimiento'}
@@ -264,12 +293,23 @@ const CrearJugador = () => {
             </View>
             <View style={styles.input}>
                 <Button
-                    title={dato.club !== '' ? dato.club : 'Club'} 
+                    title={dato.club !== '' ? dato.club : 'Club'}
                     onPress={() => handleOnChangeInput('mostrarClubesDropdown', !dato.mostrarClubesDropdown)}
                 />
-                {dato.mostrarClubesDropdown && dataClubes.map((club) => (
-                    <Button title={club.nombre} key={club.clubId} onPress={() => handleOnChangeInput('club', club.nombre)} />
-                ))}
+                {dato.mostrarClubesDropdown && (
+                    <View style={styles.dropdown}>
+                        {dataClubes.map((club) => (
+                            <Button
+                                title={club.nombre}
+                                key={club.clubId}
+                                onPress={() => {
+                                    handleOnChangeInput('club', club.nombre);
+                                    handleOnChangeInput('mostrarClubesDropdown', false); // Cierra el dropdown después de elegir una opción
+                                }}
+                            />
+                        ))}
+                    </View>
+                )}
             </View>
             <View style={styles.input}>
                 <TextInput
