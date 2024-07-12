@@ -12,6 +12,7 @@ import Clubes from './client/views/Clubes.js';
 import DetalleJugador from './client/views/DetalleJugador.js';
 import Estadisticas from './client/views/Estadisticas.js';
 import TabNavigator from './client/tabs/TabNavigator.js';
+import AuthStackNavigator from './client/navigation/AuthStackNavigation.js'
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-        <Stack.Navigator initialRouteName='Home'> 
+        <Stack.Navigator initialRouteName='Credenciales'> 
+          <Stack.Screen name="Credenciales" component={AuthStackNavigator} />
           <Stack.Screen name="Inicio" component={Home} />
           <Stack.Screen name="Agregar Jugador" component={CrearJugador} />
           <Stack.Screen name="Clubes" component={Clubes} />

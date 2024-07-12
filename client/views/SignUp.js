@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// Importa tu función de inicio de sesión / autenticación
-import { apiKey } from '../../server/usersFirebase.js'; 
+// Importa tu función de registro
+import { createUser } from '../../server/usersFirebase.js'; 
 
-const Login = () => {
+const SignUp = () => {
+    const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const navigation = useNavigation();
 
     const validarEmail = (email) => {
@@ -14,8 +16,13 @@ const Login = () => {
         return re.test(String(email).toLowerCase());
     };
 
-    const iniciarSesion = async () => {
-        // Validaciones de email y contraseña
+    const registrarUsuario = async () => {
+        // Validaciones de email, contraseña y nombre
+        if (!nombre) {
+            alert('Por favor ingrese su nombre.');
+            return;
+        }
+
         if (!email) {
             alert('Por favor ingrese su email.');
             return;
@@ -31,20 +38,33 @@ const Login = () => {
             return;
         }
 
+        if (password !== confirmPassword) {
+            alert('Las contraseñas no coinciden.');
+            return;
+        }
+
         try {
-            // Llama a la función de login con email y password
-            await loginUser({ email, password });
-            alert('Inicio de sesión exitoso');
-            // Navega a la pantalla principal o la que sea necesaria tras el login
-            navigation.navigate('Home');
+            // Llama a la función de registro con email y password
+            await createUser({ email, password, nombre });
+            alert('Registro exitoso');
+            // Navega a la pantalla principal o la que sea necesaria tras el registro
+            navigation.navigate('Login');
         } catch (error) {
-            alert('Ups!! Hubo un error. No pudimos iniciar sesión.');
-            console.error('Error al iniciar sesión:', error);
+            alert('Ups!! Hubo un error. No pudimos realizar el registro.');
+            console.error('Error al registrar usuario:', error);
         }
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder='Nombre'
+                    onChangeText={(valor) => setNombre(valor)}
+                    value={nombre}
+                    style={styles.placeholder}
+                />
+            </View>
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Email'
@@ -63,15 +83,24 @@ const Login = () => {
                     secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
                 />
             </View>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder='Confirmar Password'
+                    onChangeText={(valor) => setConfirmPassword(valor)}
+                    value={confirmPassword}
+                    style={styles.placeholder}
+                    secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
+                />
+            </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={iniciarSesion} style={styles.button}>
-                    <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                <TouchableOpacity onPress={registrarUsuario} style={styles.button}>
+                    <Text style={styles.buttonText}>Registrarse</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>¿No tenés una cuenta?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Registro')} style={styles.signupButton}>
-                    <Text style={styles.signupButtonText}>Registrate</Text>
+                <Text style={styles.signupText}>¿Ya estás registrad@?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.LoginButton}>
+                    <Text style={styles.signupButtonText}>Logueate</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -110,20 +139,14 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-    signupContainer: {
-        flexDirection: 'row',
-        marginTop: 20,
-    },
-    signupText: {
-        fontSize: 16,
-    },
-    signupButton: {
-        marginLeft: 10,
-    },
     signupButtonText: {
         fontSize: 16,
         color: 'blue',
     },
+    LoginButton:{
+        marginTop: 10,
+        alignItems: 'center'
+    }
 });
 
-export default Login;
+export default SignUp;
