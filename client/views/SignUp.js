@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useSignUpMutation } from '../../server/servicesFireBase/authenticationApi';
+import { useSignUpMutation } from '../../server/servicesFireBase/credencialesApi';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../features/User/UserSlice';
 
 
 const SignUp = () => {
@@ -12,7 +14,20 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigation = useNavigation();
 
+
+    const dispatch = useDispatch()
     const [triggerSignUp, result] = useSignUpMutation()
+
+    useEffect(() => {
+        if (result.isSuccess) {
+            dispatch(
+                setUser({
+                    email:result.data.email,
+                    idToken:result.data.idToken
+                })
+            )
+        }
+    },[result])
 
     const validarEmail = (email) => {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -20,7 +35,7 @@ const SignUp = () => {
     };
 
     const registrarUsuario = async () => {
-        // // Validaciones de email, contraseña, nombre y apellido
+        // Validaciones de email, contraseña, nombre y apellido
         // if (!nombre) {
         //     alert('Por favor ingrese su nombre.');
         //     return;
@@ -53,7 +68,7 @@ const SignUp = () => {
 
         try {
             // Llama a la función de registro con email, password y el returnSecureToken  
-            await triggerSignUp({ email, password, returnSecureToken: true });
+            await triggerSignUp({ nombre, password, email, password, returnSecureToken: true });
             alert('Registro exitoso');
             console.log("SignUp -->", email, password)
             console.log("esto es el result del signUp:", result)
@@ -71,7 +86,7 @@ const SignUp = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            {/* <View style={styles.inputContainer}>
+            <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Nombre'
                     onChangeText={(valor) => setNombre(valor)}
@@ -86,7 +101,7 @@ const SignUp = () => {
                     value={apellido}
                     style={styles.placeholder}
                 />
-            </View> */}
+            </View>
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Email'

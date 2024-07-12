@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// Importa tu función de inicio de sesión / autenticación
-import { apiKey } from '../../server/usersFirebase.js'; 
+import { useDispatch } from 'react-redux';
+import { useSignInMutation } from '../../server/servicesFireBase/credencialesApi';
+
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
+
+    const dispatch = useDispatch()
+    const {triggerSignIn, result} = useSignInMutation()
+
+    // useEffect(() => {
+    //     if (result.isSuccess) {
+    //         dispatch(
+    //             setUser({
+    //                 email:result.data.email,
+    //                 idToken:result.data.idToken
+    //             })
+    //         )
+    //     }
+    // },[result])
+
 
     const validarEmail = (email) => {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -33,9 +50,10 @@ const Login = () => {
 
         try {
             // Llama a la función de login con email y password
-            // await apiKey({ email, password });
+            // await triggerSignIn({ email, password });
             // alert('Inicio de sesión exitoso');
             console.log('login:', email, password)
+            console.log('result del login:', result)
             // Navega a la pantalla principal
             navigation.navigate('Inicio');
         } catch (error) {
@@ -51,6 +69,7 @@ const Login = () => {
                     placeholder='Email'
                     onChangeText={(valor) => setEmail(valor)}
                     value={email}
+                    autoCapitalize='none'
                     keyboardType='email-address'
                     style={styles.placeholder}
                 />

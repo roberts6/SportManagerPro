@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../views/Login';
 import SignUp from '../views/SignUp';
@@ -6,8 +6,6 @@ import SignUp from '../views/SignUp';
 const Stack = createNativeStackNavigator();
 
 const AuthStackNavigator = () => {
-    const [userLogged, setUserLogged] = useState(null);
-
     return (
         <Stack.Navigator
             initialRouteName="Login"
