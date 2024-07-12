@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// Importa tu función de registro
-import { createUser } from '../../server/usersFirebase.js'; 
+import { useSignUpMutation } from '../../server/servicesFireBase/authenticationApi';
+
 
 const SignUp = () => {
     const [nombre, setNombre] = useState('');
+    const [apellido, setApellido] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigation = useNavigation();
+
+    const [triggerSignUp, result] = useSignUpMutation()
 
     const validarEmail = (email) => {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -17,11 +20,16 @@ const SignUp = () => {
     };
 
     const registrarUsuario = async () => {
-        // Validaciones de email, contraseña y nombre
-        if (!nombre) {
-            alert('Por favor ingrese su nombre.');
-            return;
-        }
+        // // Validaciones de email, contraseña, nombre y apellido
+        // if (!nombre) {
+        //     alert('Por favor ingrese su nombre.');
+        //     return;
+        // }
+
+        // if (!apellido) {
+        //     alert('Por favor ingrese su apellido.');
+        //     return;
+        // }
 
         if (!email) {
             alert('Por favor ingrese su email.');
@@ -33,8 +41,8 @@ const SignUp = () => {
             return;
         }
 
-        if (!password || password.length <= 3) {
-            alert('Por favor ingrese una contraseña mayor a 4 caracteres.');
+        if (!password || password.length <= 5) {
+            alert('Por favor ingrese una contraseña mayor a 5 caracteres.');
             return;
         }
 
@@ -44,10 +52,16 @@ const SignUp = () => {
         }
 
         try {
-            // Llama a la función de registro con email y password
-            await createUser({ email, password, nombre });
+            // Llama a la función de registro con email, password y el returnSecureToken  
+            await triggerSignUp({ email, password, returnSecureToken: true });
             alert('Registro exitoso');
-            // Navega a la pantalla principal o la que sea necesaria tras el registro
+            console.log("SignUp -->", email, password)
+            console.log("esto es el result del signUp:", result)
+            setNombre('')
+            setApellido('')
+            setEmail('')
+            setConfirmPassword('')
+            // Navega al Login
             navigation.navigate('Login');
         } catch (error) {
             alert('Ups!! Hubo un error. No pudimos realizar el registro.');
@@ -57,7 +71,7 @@ const SignUp = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.inputContainer}>
+            {/* <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Nombre'
                     onChangeText={(valor) => setNombre(valor)}
@@ -67,9 +81,18 @@ const SignUp = () => {
             </View>
             <View style={styles.inputContainer}>
                 <TextInput
+                    placeholder='Apellido'
+                    onChangeText={(valor) => setApellido(valor)}
+                    value={apellido}
+                    style={styles.placeholder}
+                />
+            </View> */}
+            <View style={styles.inputContainer}>
+                <TextInput
                     placeholder='Email'
                     onChangeText={(valor) => setEmail(valor)}
                     value={email}
+                    autoCapitalize='none' // evita que se coloque sola la mayúscula
                     keyboardType='email-address'
                     style={styles.placeholder}
                 />

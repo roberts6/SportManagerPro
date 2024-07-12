@@ -13,6 +13,7 @@ import DetalleJugador from './client/views/DetalleJugador.js';
 import Estadisticas from './client/views/Estadisticas.js';
 import TabNavigator from './client/tabs/TabNavigator.js';
 import AuthStackNavigator from './client/navigation/AuthStackNavigation.js'
+import MainNavigator from './client/navigation/MainNavigator.js';
 
 const Stack = createStackNavigator();
 

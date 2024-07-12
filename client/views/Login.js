@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 // Importa tu función de inicio de sesión / autenticación
 import { apiKey } from '../../server/usersFirebase.js'; 
@@ -33,10 +33,11 @@ const Login = () => {
 
         try {
             // Llama a la función de login con email y password
-            await loginUser({ email, password });
-            alert('Inicio de sesión exitoso');
-            // Navega a la pantalla principal o la que sea necesaria tras el login
-            navigation.navigate('Home');
+            // await apiKey({ email, password });
+            // alert('Inicio de sesión exitoso');
+            console.log('login:', email, password)
+            // Navega a la pantalla principal
+            navigation.navigate('Inicio');
         } catch (error) {
             alert('Ups!! Hubo un error. No pudimos iniciar sesión.');
             console.error('Error al iniciar sesión:', error);
@@ -64,15 +65,15 @@ const Login = () => {
                 />
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={iniciarSesion} style={styles.button}>
+                <Pressable onPress={iniciarSesion} style={styles.button}>
                     <Text style={styles.buttonText}>Iniciar Sesión</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
             <View style={styles.signupContainer}>
                 <Text style={styles.signupText}>¿No tenés una cuenta?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Registro')} style={styles.signupButton}>
+                <Pressable onPress={() => navigation.navigate('Registro')} style={styles.signupButton}>
                     <Text style={styles.signupButtonText}>Registrate</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </ScrollView>
     );

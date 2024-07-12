@@ -17,8 +17,8 @@ const CrearJugador = () => {
         telefono: '',
         direccion: '',
         email: '',
-        password: '',
-        confirmacionPassword: '',
+        // password: '',
+        // confirmacionPassword: '',
         fecha_nacimiento: '',
         club: '',
         telefono_emergencia: '',
@@ -125,15 +125,15 @@ const CrearJugador = () => {
         return;
     }
 
-    if (!password || password.length <= 3) {
-        alert('Por favor ingresa un password mayor a 4 caracteres')
-        return;
-    }
+//     if (!password || password.length <= 3) {
+//         alert('Por favor ingresa un password mayor a 4 caracteres')
+//         return;
+//     }
 
-if (confirmacionPassword !== password) {
-    alert("La confirmación de tu password no es igual al password ingresado")
-    return;
-}
+// if (confirmacionPassword !== password) {
+//     alert("La confirmación de tu password no es igual al password ingresado")
+//     return;
+// }
 
 if (!fecha_nacimiento) {
     alert('Por favor ingresá tu fecha de nacimiento.');
@@ -169,7 +169,7 @@ if (!fecha_nacimiento) {
                 telefono: dato.telefono,
                 direccion: dato.direccion,
                 email: dato.email,
-                password: dato.password,
+                // password: dato.password,
                 fecha_nacimiento: dato.fecha_nacimiento,
                 club: dato.club,
                 telefono_emergencia: dato.telefono_emergencia,
@@ -259,7 +259,7 @@ if (!fecha_nacimiento) {
                     style={styles.placeholder}
                 />
             </View>
-            <View style={styles.input}>
+            {/* <View style={styles.input}>
                 <TextInput
                     placeholder='Password'
                     onChangeText={(valor) => handleOnChangeInput('password', valor)}
@@ -276,7 +276,7 @@ if (!fecha_nacimiento) {
                     style={styles.placeholder}
                     secureTextEntry={true} 
                 />
-            </View>
+            </View> */}
             <View style={[styles.input, styles.fecha]}>
                 <Button
                     title={dato.fecha_nacimiento !== '' ? dato.fecha_nacimiento : 'Fecha de Nacimiento'}
