@@ -1,190 +1,466 @@
-import React, { useEffect, useState } from 'react';
-import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Button, TextInput, ScrollView, StyleSheet, Text, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { calcularCategoria } from '../features/utilidades/calcularCategoriaHandball.js';
+import { calcularEdad } from '../features/utilidades/calcularEdad.js';
+import { fechaYhora } from '../features/utilidades/fechaYhora.js';
+import { usePostJugadorMutation, usePostDelegadoMutation, usePostEntrenadorMutation } from '../../server/servicesFireBase/services';
+import { useGetClubesQuery } from '../../server/servicesFireBase/services.js';
 import { useNavigation } from '@react-navigation/native';
-import { useSignUpMutation } from '../../server/servicesFireBase/credencialesApi';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../features/User/UserSlice';
 
 
 const SignUp = () => {
-    const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const navigation = useNavigation();
+    
+    const initialState = {
+        id: '',
+        nombre: '',
+        apellido: '',
+        dni: '',
+        edad: '',
+        genero: '',
+        telefono: '',
+        direccion: '',
+        email: '',
+        password: '',
+        confirmacionPassword: '',
+        fecha_nacimiento: '',
+        club: '',
+        rol: '',
+        telefono_emergencia: '',
+        prestador_servicio_emergencia: '',
+        habilitado: false,
+        fecha_registro: '',
+        mostrarClubesDropdown: false
+    };
 
+    const [dato, setDato] = useState(initialState);
+    const [mostrarGenero, setMostrarGenero] = useState(false);
+    const [mostrarRol, setMostrarRol] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [clubes, setClubes] = useState([]);
+    const [fecha, setFecha] = useState(new Date());
 
-    const dispatch = useDispatch()
-    const [triggerSignUp, result] = useSignUpMutation()
+    // este handler recibe los cambios en cada input y almacena los valores en el objeto dato
+    const handleOnChangeInput = (clave, valor) => {
+        //console.log('Actualizando estado:', clave, valor);
+        setDato((dato) => ({ ...dato, [clave]: valor }));
+    };
 
-    useEffect(() => {
-        if (result.isSuccess) {
-            dispatch(
-                setUser({
-                    email:result.data.email,
-                    idToken:result.data.idToken
-                })
-            )
+    const seleccionarGenero = (valor) => {
+        handleOnChangeInput('genero', valor);
+        setMostrarGenero(false);
+    };
+
+    const seleccionarRol = (valor) => {
+        handleOnChangeInput('rol', valor);
+        setMostrarRol(false);
+    };
+
+    const seleccionarFecha = (event, selectedDate) => {
+        // Maneja la cancelación del DatePicker en Android
+        if (event.type === 'dismissed') {
+            setShowDatePicker(false);
+            return;
         }
-    },[result])
+    
+        // Ajusta la fecha para evitar cambios por zona horaria
+        const currentDate = selectedDate || date;
+        const normalizedDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate()
+                );
+    
+        if (Platform.OS === 'ios') {
+            setShowDatePicker(true); // Para iOS
+        } else {
+            setShowDatePicker(false); // Para Android
+        }
+        setFecha(normalizedDate);
+    
+        // Convierte la fecha a una cadena en formato YYYY-MM-DD
+        const formattedDate = normalizedDate.toISOString().split('T')[0];
+        handleOnChangeInput('fecha_nacimiento', formattedDate);
+    };
+
+    const generateRandomId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    };
 
     const validarEmail = (email) => {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         return re.test(String(email).toLowerCase());
     };
 
-    const registrarUsuario = async () => {
-        // Validaciones de email, contraseña, nombre y apellido
-        // if (!nombre) {
-        //     alert('Por favor ingrese su nombre.');
-        //     return;
-        // }
+    const [triggerPostJugador, result] = usePostJugadorMutation();
+    const [triggerPostDelegado, resultDelegado] = usePostDelegadoMutation()
+    const [triggerPostEntrenador, resultEntrenador] = usePostEntrenadorMutation()
+    const {data: dataClubes} = useGetClubesQuery()
 
-        // if (!apellido) {
-        //     alert('Por favor ingrese su apellido.');
-        //     return;
-        // }
+    const guardarUsuarioNuevo = async () => {
+        // desestructuro los valores de "dato"
+        const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, rol, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia, fecha_registro } = dato;
 
-        if (!email) {
-            alert('Por favor ingrese su email.');
-            return;
-        }
+    if (!nombre) {
+        alert('Por favor ingresá tu nombre.');
+        return;
+    }
 
-        if (!validarEmail(email)) {
-            alert('Por favor ingrese un email válido.');
-            return;
-        }
+    if (!apellido) {
+        alert('Por favor ingresá tu apellido.');
+        return;
+    }
 
-        if (!password || password.length <= 5) {
-            alert('Por favor ingrese una contraseña mayor a 5 caracteres.');
-            return;
-        }
+    if (!dni) {
+        alert('Por favor ingresá tu dni.');
+        return;
+    }
 
-        if (password !== confirmPassword) {
-            alert('Las contraseñas no coinciden.');
-            return;
-        }
+    if (!genero) {
+        alert('Por favor elegí tu género.');
+        return;
+    }
+
+    if (!telefono) {
+        alert('Por favor ingresá tu teléfono')
+        return;
+    } else if (isNaN(Number(telefono)) || telefono.length <= 9 ) {
+        alert('El teléfono debe ser numérico y tener al menos 10 dígitos.');
+        return;
+    }
+
+    if (!direccion) {
+        alert('Por favor ingresá tu dirección.');
+        return;
+    }
+
+    if (!validarEmail(email)) {
+        alert('Por favor ingrese un email válido.');
+        return;
+    }
+
+    if (!password || password.length <= 5) {
+        alert('Por favor ingresa con un mínimo de 6 caracteres')
+        return;
+    }
+
+if (confirmacionPassword !== password) {
+    alert("La confirmación de tu password no es igual al password ingresado")
+    return;
+}
+
+if (!fecha_nacimiento) {
+    alert('Por favor ingresá tu fecha de nacimiento.');
+    return;
+}
+
+    if (!club) {
+        alert('Por favor ingresá en qué club jugás.');
+        return;
+    }
+
+    if (!rol) {
+        alert(`Por favor ingresá cuál es tu función en ${club}.`);
+        return;
+    }
+
+    if (!telefono_emergencia) {
+        alert('Por favor ingresá un teléfono de emergencia')
+        return;
+    } else if (isNaN(Number(telefono_emergencia)) || telefono_emergencia.length <= 9) {
+        alert('El teléfono de emergencia debe ser numérico y tener al menos 10 dígitos.');
+        return;
+    }
+
+    if (!prestador_servicio_emergencia) {
+        alert('Por favor ingresá cuál es tu prestador de servicios de salud.');
+        return;
+    }
 
         try {
-            // Llama a la función de registro con email, password y el returnSecureToken  
-            await triggerSignUp({ nombre, password, email, password, returnSecureToken: true });
-            alert('Registro exitoso');
-            console.log("SignUp -->", email, password)
-            console.log("esto es el result del signUp:", result)
-            setNombre('')
-            setApellido('')
-            setEmail('')
-            setConfirmPassword('')
-            // Navega al Login
-            navigation.navigate('Login');
+            if (dato.rol === 'Jugador') {
+                const jugador = {
+                                id: generateRandomId(),
+                                nombre: dato.nombre,
+                                apellido: dato.apellido,
+                                edad: calcularEdad(dato.fecha_nacimiento),
+                                categoria: calcularCategoria(dato.fecha_nacimiento),
+                                genero: dato.genero,
+                                telefono: dato.telefono,
+                                direccion: dato.direccion,
+                                email: dato.email,
+                                password: dato.password,
+                                confirmacionPassword: dato.confirmacionPassword,
+                                fecha_nacimiento: dato.fecha_nacimiento,
+                                club: dato.club,
+                                rol: dato.rol,
+                                telefono_emergencia: dato.telefono_emergencia,
+                                prestador_servicio_emergencia: dato.prestador_servicio_emergencia,
+                                habilitado: false,
+                                fecha_registro: fechaYhora()
+                }
+                await triggerPostJugador(jugador);
+                // Limpiar datos y mostrar alerta de éxito
+                setDato(initialState);
+                setFecha(new Date());
+                setShowDatePicker(false);
+                setMostrarGenero(false);
+                setMostrarRol(false);
+                setClubes([]);
+                alert('Jugador guardado exitosamente');
+                navigation.navigate('Login');
+            } else if (dato.rol === 'Delegado') {
+                const delegado = {
+                                id: generateRandomId(),
+                                nombre: dato.nombre,
+                                apellido: dato.apellido,
+                                edad: calcularEdad(dato.fecha_nacimiento),
+                                genero: dato.genero,
+                                telefono: dato.telefono,
+                                direccion: dato.direccion,
+                                email: dato.email,
+                                password: dato.password,
+                                confirmacionPassword: dato.confirmacionPassword,
+                                fecha_nacimiento: dato.fecha_nacimiento,
+                                club: dato.club,
+                                rol: dato.rol,
+                                telefono_emergencia: dato.telefono_emergencia,
+                                prestador_servicio_emergencia: dato.prestador_servicio_emergencia,
+                                habilitado: false,
+                                fecha_registro: fechaYhora()
+                            };
+                await triggerPostDelegado(delegado);
+                // Limpiar datos y mostrar alerta de éxito
+                setDato(initialState);
+                setFecha(new Date());
+                setShowDatePicker(false);
+                setMostrarGenero(false);
+                setMostrarRol(false);
+                setClubes([]);
+                alert('Delegado guardado exitosamente');
+                navigation.navigate('Login');
+            } else if (dato.rol === 'Entrenador') {
+                const entrenador = {
+                    id: generateRandomId(),
+                    nombre: dato.nombre,
+                    apellido: dato.apellido,
+                    edad: calcularEdad(dato.fecha_nacimiento),
+                    genero: dato.genero,
+                    telefono: dato.telefono,
+                    direccion: dato.direccion,
+                    email: dato.email,
+                    password: dato.password,
+                    confirmacionPassword: dato.confirmacionPassword,
+                    fecha_nacimiento: dato.fecha_nacimiento,
+                    club: dato.club,
+                    rol: dato.rol,
+                    telefono_emergencia: dato.telefono_emergencia,
+                    prestador_servicio_emergencia: dato.prestador_servicio_emergencia,
+                    habilitado: false,
+                    fecha_registro: fechaYhora()
+                };
+                await triggerPostEntrenador(entrenador);
+                // Limpiar datos y mostrar alerta de éxito
+                setDato(initialState);
+                setFecha(new Date());
+                setShowDatePicker(false);
+                setMostrarGenero(false);
+                setMostrarRol(false);
+                setClubes([]);
+                alert('Entrenador guardado exitosamente');
+                navigation.navigate('Login');
+            }
         } catch (error) {
-            alert('Ups!! Hubo un error. No pudimos realizar el registro.');
-            console.error('Error al registrar usuario:', error);
+            // Mostrar alerta de error en caso de excepción
+            alert('Ups!! Hubo un error. No pudimos guardar la información');
+            console.error('Error al guardar el usuario:', error);
         }
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.inputContainer}>
+        <ScrollView>
+            <View style={[styles.input, {marginTop: 30}]}>
                 <TextInput
                     placeholder='Nombre'
-                    onChangeText={(valor) => setNombre(valor)}
-                    value={nombre}
+                    onChangeText={(valor) => handleOnChangeInput('nombre', valor)}
+                    value={dato.nombre}
                     style={styles.placeholder}
                 />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={styles.input}>
                 <TextInput
                     placeholder='Apellido'
-                    onChangeText={(valor) => setApellido(valor)}
-                    value={apellido}
+                    onChangeText={(valor) => handleOnChangeInput('apellido', valor)}
+                    value={dato.apellido}
                     style={styles.placeholder}
                 />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='DNI'
+                    onChangeText={(valor) => handleOnChangeInput('dni', valor)}
+                    value={dato.dni}
+                    keyboardType='numeric'
+                    style={styles.placeholder}
+                />
+            </View>
+            <View style={styles.input}>
+                <Button
+                    title={dato.genero !== '' ? dato.genero : 'Género'}
+                    onPress={() => setMostrarGenero(!mostrarGenero)}
+                />
+                {mostrarGenero && (
+                    <View>
+                        <Button title="Masculino" onPress={() => seleccionarGenero('Masculino')} />
+                        <Button title="Femenino" onPress={() => seleccionarGenero('Femenino')} />
+                    </View>
+                )}
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Teléfono'
+                    onChangeText={(valor) => handleOnChangeInput('telefono', valor)}
+                    value={dato.telefono}
+                    keyboardType='phone-pad'
+                    style={styles.placeholder}
+                />
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Dirección'
+                    onChangeText={(valor) => handleOnChangeInput('direccion', valor)}
+                    value={dato.direccion}
+                    style={styles.placeholder}
+                />
+            </View>
+            <View style={styles.input}>
                 <TextInput
                     placeholder='Email'
-                    onChangeText={(valor) => setEmail(valor)}
-                    value={email}
-                    autoCapitalize='none' // evita que se coloque sola la mayúscula
+                    onChangeText={(valor) => handleOnChangeInput('email', valor)}
+                    value={dato.email}
                     keyboardType='email-address'
+                    autoCapitalize='none'
                     style={styles.placeholder}
                 />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={styles.input}>
                 <TextInput
                     placeholder='Password'
-                    onChangeText={(valor) => setPassword(valor)}
-                    value={password}
+                    onChangeText={(valor) => handleOnChangeInput('password', valor)}
+                    value={dato.password}
                     style={styles.placeholder}
                     secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
                 />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={styles.input}>
                 <TextInput
                     placeholder='Confirmar Password'
-                    onChangeText={(valor) => setConfirmPassword(valor)}
-                    value={confirmPassword}
+                    onChangeText={(valor) => handleOnChangeInput('confirmacionPassword', valor)}
+                    value={dato.confirmacionPassword}
                     style={styles.placeholder}
                     secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
+                />
+            </View>
+            <View style={[styles.input, styles.fecha]}>
+                <Button
+                    title={dato.fecha_nacimiento !== '' ? dato.fecha_nacimiento : 'Fecha de Nacimiento'}
+                    onPress={() => setShowDatePicker(true)}
+                />
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={fecha}
+                        mode="date"
+                        display="default"
+                        onChange={seleccionarFecha}
+                    />
+                )}
+            </View>
+            <View style={styles.input}>
+                <Button
+                    title={dato.club !== '' ? dato.club : 'Club'}
+                    onPress={() => handleOnChangeInput('mostrarClubesDropdown', !dato.mostrarClubesDropdown)}
+                />
+                {dato.mostrarClubesDropdown && (
+                    <View style={styles.dropdown}>
+                        {dataClubes.map((club) => (
+                            <Button
+                                title={club.nombre}
+                                key={club.clubId}
+                                onPress={() => {
+                                    handleOnChangeInput('club', club.nombre);
+                                    handleOnChangeInput('mostrarClubesDropdown', false); // Cierra el dropdown después de elegir una opción
+                                }}
+                            />
+                        ))}
+                    </View>
+                )}
+            </View>
+            <View style={styles.input}>
+                <Button
+                    title={dato.rol !== '' ? dato.rol : 'Rol'}
+                    onPress={() => setMostrarRol(!mostrarRol)}
+                />
+                {mostrarRol && (
+                    <View>
+                        <Button title="Jugador" onPress={() => seleccionarRol('Jugador')} />
+                        <Button title="Entrenador" onPress={() => seleccionarRol('Entrenador')} />
+                        <Button title="Delegado" onPress={() => seleccionarRol('Delegado')} />
+                    </View>
+                )}
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Teléfono de Emergencia'
+                    onChangeText={(valor) => handleOnChangeInput('telefono_emergencia', valor)}
+                    value={dato.telefono_emergencia}
+                    keyboardType='numeric'
+                    style={styles.placeholder}
+                />
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Prestador de Servicio de Emergencia'
+                    onChangeText={(valor) => handleOnChangeInput('prestador_servicio_emergencia', valor.toUpperCase())}
+                    value={dato.prestador_servicio_emergencia}
+                    style={styles.placeholder}
                 />
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={registrarUsuario} style={styles.button}>
-                    <Text style={styles.buttonText}>Registrarse</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>¿Ya estás registrad@?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.LoginButton}>
-                    <Text style={styles.signupButtonText}>Logueate</Text>
-                </TouchableOpacity>
+                <Button
+                    title='Guardar'
+                    onPress={guardarUsuarioNuevo}
+                    color='white'
+                />
             </View>
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    inputContainer: {
-        width: '100%',
+    input: {
         marginVertical: 10,
-    },
-    placeholder: {
         fontSize: 20,
-        width: '100%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        padding: 10,
-        textAlign: "center"
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    placeholder:{
+        fontSize:20
+    },
+    fecha: {
+        textAlign: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: "column"
     },
     buttonContainer: {
-        padding: 20,
-    },
-    button: {
         backgroundColor: 'green',
-        padding: 15,
+        padding: 10,
+        marginVertical: 50,
+        marginHorizontal: 50,
         borderRadius: 5,
-        alignItems: 'center',
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    signupButtonText: {
-        fontSize: 16,
-        color: 'blue',
-    },
-    LoginButton:{
-        marginTop: 10,
-        alignItems: 'center'
-    }
 });
 
 export default SignUp;
+

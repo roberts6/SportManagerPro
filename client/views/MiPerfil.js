@@ -1,16 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 
-const DetalleJugador = ({ route }) => {
-    const { jugador } = route.params; 
+
+import { usePostUsuarioMutation } from '../../server/servicesFireBase/services';
+
+const MiPerfil = () => {
+    const route = useRoute();
     const navigation = useNavigation();
+    const { email, password } = route.params || {};
+
+    const [jugador, setJugador] = useState(null);
+
+    // Iniciar el hook para postear datos del usuario
+    const [triggerPostUsuario, result] = usePostUsuarioMutation();
+
+    useEffect(() => {
+        if (!email || !password) {
+            navigation.navigate('Home'); // Regresa a Home si los parámetros no existen
+            return;
+        }
+
+        // Función para obtener los datos del jugador
+        const fetchJugadorDatos = async () => {
+            try {
+                const response = await triggerPostUsuario({ email, password });
+                //setJugador(response.data);
+                console.log("datos del usuario",response)
+            } catch (error) {
+                console.error('Error al obtener datos del jugador:', error);
+                alert('Error al obtener tus datos. Por favor, intenta de nuevo.');
+            }
+        };
+
+        fetchJugadorDatos();
+    }, [email, password, triggerPostUsuario, navigation]);
 
     if (!jugador) {
         return (
             <View style={styles.container}>
-                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>Jugador no encontrado</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>Cargando...</Text>
             </View>
         );
     }
@@ -20,7 +50,7 @@ const DetalleJugador = ({ route }) => {
     };
 
     const handleEditarJugadorPress = () => {
-        navigation.navigate('TabNavigator', { screen: 'Editar Datos', params: { jugador } }); 
+        navigation.navigate('TabNavigator', { screen: 'Editar Datos', params: { jugador } });
     };
 
     const fechaFormateada = moment(jugador.fecha_nacimiento).format('DD/MM/YYYY');
@@ -40,14 +70,6 @@ const DetalleJugador = ({ route }) => {
             <Text style={styles.text}>Dirección: {jugador.direccion}</Text>
             <Text style={styles.text}>Teléfono emergencia: {jugador.telefono_emergencia}</Text>
             <Text style={styles.text}>Obra Social: {jugador.prestador_servicio_emergencia}</Text>
-
-            <View style={[jugador.habilitado === false ? { display: 'none' } : styles.botonContainer]}>
-                <Button
-                    title='Agregar 📈'
-                    color='white'
-                    onPress={handleEstadisticasPress}
-                />
-            </View>
 
             <Button
                 title='✏️'
@@ -81,4 +103,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DetalleJugador;
+export default MiPerfil;

@@ -259,24 +259,6 @@ if (!fecha_nacimiento) {
                     style={styles.placeholder}
                 />
             </View>
-            {/* <View style={styles.input}>
-                <TextInput
-                    placeholder='Password'
-                    onChangeText={(valor) => handleOnChangeInput('password', valor)}
-                    value={dato.password || ''}
-                    style={styles.placeholder}
-                    secureTextEntry={true} 
-                />
-            </View>
-            <View style={styles.input}>
-                <TextInput
-                    placeholder='Confirmación Password'
-                    onChangeText={(valor) => handleOnChangeInput('confirmacionPassword', valor)}
-                    value={dato.confirmacionPassword || ''}
-                    style={styles.placeholder}
-                    secureTextEntry={true} 
-                />
-            </View> */}
             <View style={[styles.input, styles.fecha]}>
                 <Button
                     title={dato.fecha_nacimiento !== '' ? dato.fecha_nacimiento : 'Fecha de Nacimiento'}

@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { View, Button, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity, Pressable } from 'react-native';
+import { View, TextInput, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { useSignInMutation } from '../../server/servicesFireBase/credencialesApi';
-
-
+import { setUser } from '../features/User/UserSlice';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
 
-    const dispatch = useDispatch()
-    const {triggerSignIn, result} = useSignInMutation()
+    const dispatch = useDispatch();
+    const [triggerSignIn, result] = useSignInMutation();
 
-    // useEffect(() => {
-    //     if (result.isSuccess) {
-    //         dispatch(
-    //             setUser({
-    //                 email:result.data.email,
-    //                 idToken:result.data.idToken
-    //             })
-    //         )
-    //     }
-    // },[result])
-
+    useEffect(() => {
+        if (result.isSuccess) {
+            dispatch(
+                setUser({
+                    email: result.data.email,
+                    idToken: result.data.idToken
+                })
+            );
+            navigation.navigate('Inicio', { email, password }); // Navega a la pantalla principal después del login y envía los datos del email y password
+        } else if (result.isError) {
+            alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+            console.log("este es el error:",result.status)
+        }
+    }, [result, dispatch, navigation]);
 
     const validarEmail = (email) => {
         const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -50,12 +52,8 @@ const Login = () => {
 
         try {
             // Llama a la función de login con email y password
-            // await triggerSignIn({ email, password });
-            // alert('Inicio de sesión exitoso');
-            console.log('login:', email, password)
-            console.log('result del login:', result)
-            // Navega a la pantalla principal
-            navigation.navigate('Inicio');
+            await triggerSignIn({ email, password });
+            console.log('login:', email, password);
         } catch (error) {
             alert('Ups!! Hubo un error. No pudimos iniciar sesión.');
             console.error('Error al iniciar sesión:', error);

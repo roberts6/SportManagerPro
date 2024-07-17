@@ -21,7 +21,7 @@ const TabNavigator = ({ route }) => {
 
 const styles = StyleSheet.create({
     TabBar:{
-        backgroundColor: "red",
+        backgroundColor: "green",
         height: 50,
         position: 'absolute',
         marginBottom: 40

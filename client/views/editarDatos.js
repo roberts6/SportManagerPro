@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, ScrollView, StyleSheet, Text, TouchableOpacity, Pressable } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { usePutJugadorMutation } from '../../server/servicesFireBase/services';
 
@@ -15,7 +15,7 @@ const EditarDatos = () => {
 
     const guardarCambiosJugador = async () => {
         try {
-            {/*revisar porque al guardar borra lal colección Jugadores*/}
+            {/*revisar porque al guardar borra la colección Jugadores*/}
             // await triggerPutJugador(datosJugador);
             // alert('Jugador editado exitosamente');
             console.log("datos modificados:",datosJugador)
@@ -91,9 +91,9 @@ const EditarDatos = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={guardarCambiosJugador} style={styles.button}>
+                <Pressable onPress={guardarCambiosJugador} style={styles.button}>
                     <Text style={styles.buttonText}>Guardar Cambios</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </ScrollView>
     );
