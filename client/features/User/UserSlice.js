@@ -11,6 +11,7 @@ export const authSlice = createSlice({
     },
     reducers: {
         setUser: (state, {payload}) => {
+            state.value.id = payload.id, // probando insertar id
             state.value.user = payload.email,
             state.value.token = payload.idToken 
         },

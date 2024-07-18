@@ -11,11 +11,26 @@ export const ApiJugadores = createApi({
         getClubes: builder.query({
             query: () => `Clubes.json` // Endpoint para la colección de clubes
         }),
+        getEntrenadores: builder.query({
+            query: () => `Entrenadores.json` // Endpoint para la colección de Entrenadores
+        }),
+        getDelegados: builder.query({
+            query: () => `Delegados.json` // Endpoint para la colección de Delegados
+        }),
         getJugadoresByClub: builder.query({
             query: (clubId) => `Jugadores.json?orderBy="clubId"&equalTo="${clubId}"`
         }),
         getJugadorById: builder.query({
             query: (jugadorId) => `Jugadores.json?orderBy="id"&equalTo="${jugadorId}"`
+        }),
+        getJugadorByEmail: builder.query({
+            query: (email) => `Jugadores.json?orderBy="email"&equalTo="${email}"`
+        }),
+        getEntrenadorById: builder.query({
+            query: (entrenadorId) => `Entrenadores.json?orderBy="id"&equalTo="${entrenadorId}"`
+        }),
+        getDelegadoById: builder.query({
+            query: (delegadoId) => `Delegados.json?orderBy="id"&equalTo="${delegadoId}"`
         }),
         postJugador: builder.mutation({
             query: (jugador) => ({
@@ -51,10 +66,15 @@ export const ApiJugadores = createApi({
 export const {
     useGetJugadoresQuery,
     useGetClubesQuery,
+    useGetDelegadosQuery,
+    useGetEntrenadoresQuery,
     useGetJugadorByIdQuery,
     useGetJugadoresByClubQuery,
+    useGetDelegadoByIdQuery,
+    useGetEntrenadorByIdQuery,
     usePostJugadorMutation,
     usePostEntrenadorMutation,
     usePostDelegadoMutation,
     usePutJugadorMutation,
+    useGetJugadorByEmailQuery
 } = ApiJugadores;

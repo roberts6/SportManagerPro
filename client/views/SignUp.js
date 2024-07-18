@@ -6,6 +6,7 @@ import { calcularEdad } from '../features/utilidades/calcularEdad.js';
 import { fechaYhora } from '../features/utilidades/fechaYhora.js';
 import { usePostJugadorMutation, usePostDelegadoMutation, usePostEntrenadorMutation } from '../../server/servicesFireBase/services';
 import { useGetClubesQuery } from '../../server/servicesFireBase/services.js';
+import { useSignUpMutation } from '../../server/servicesFireBase/credencialesApi';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -96,6 +97,7 @@ const SignUp = () => {
     const [triggerPostJugador, result] = usePostJugadorMutation();
     const [triggerPostDelegado, resultDelegado] = usePostDelegadoMutation()
     const [triggerPostEntrenador, resultEntrenador] = usePostEntrenadorMutation()
+    const [triggerSignUp, resultSignUp] = useSignUpMutation()
     const {data: dataClubes} = useGetClubesQuery()
 
     const guardarUsuarioNuevo = async () => {
@@ -201,6 +203,7 @@ if (!fecha_nacimiento) {
                                 fecha_registro: fechaYhora()
                 }
                 await triggerPostJugador(jugador);
+                await triggerSignUp({ email, password, returnSecureToken: true });
                 // Limpiar datos y mostrar alerta de éxito
                 setDato(initialState);
                 setFecha(new Date());
@@ -209,7 +212,7 @@ if (!fecha_nacimiento) {
                 setMostrarRol(false);
                 setClubes([]);
                 alert('Jugador guardado exitosamente');
-                navigation.navigate('Login');
+                navigation.navigate('Login', {id, nombre, email, password});
             } else if (dato.rol === 'Delegado') {
                 const delegado = {
                                 id: generateRandomId(),
@@ -231,6 +234,7 @@ if (!fecha_nacimiento) {
                                 fecha_registro: fechaYhora()
                             };
                 await triggerPostDelegado(delegado);
+                await triggerSignUp({ email, password, returnSecureToken: true });
                 // Limpiar datos y mostrar alerta de éxito
                 setDato(initialState);
                 setFecha(new Date());
@@ -239,7 +243,7 @@ if (!fecha_nacimiento) {
                 setMostrarRol(false);
                 setClubes([]);
                 alert('Delegado guardado exitosamente');
-                navigation.navigate('Login');
+                navigation.navigate('Login', {id, nombre, email, password});
             } else if (dato.rol === 'Entrenador') {
                 const entrenador = {
                     id: generateRandomId(),
@@ -261,6 +265,7 @@ if (!fecha_nacimiento) {
                     fecha_registro: fechaYhora()
                 };
                 await triggerPostEntrenador(entrenador);
+                await triggerSignUp({ email, password, returnSecureToken: true });
                 // Limpiar datos y mostrar alerta de éxito
                 setDato(initialState);
                 setFecha(new Date());
@@ -269,7 +274,7 @@ if (!fecha_nacimiento) {
                 setMostrarRol(false);
                 setClubes([]);
                 alert('Entrenador guardado exitosamente');
-                navigation.navigate('Login');
+                navigation.navigate('Login', {id, nombre, email, password});
             }
         } catch (error) {
             // Mostrar alerta de error en caso de excepción
