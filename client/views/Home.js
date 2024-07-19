@@ -23,44 +23,40 @@ export default function Home({ navigation, route }) {
   const { data: DelegadoEmail, isSuccess: DelegadoEmailSuccess } = useGetDelegadoByEmailQuery(email);
 
   const [matchedData, setMatchedData] = useState(null);
+  
+  const [datosJugadoresEmail, setDatosJugadoresEmail] = useState(null)
+  const [datosJEntrenadoresEmail, setDatosJEntrenadoresEmail] = useState(null)
+  const [datosDelegadosEmail, setDatosDelegadosEmail] = useState(null)  
 
   useEffect(() => {
-  //  if (JugadorSuccess && Jugador) {
-  //     const jugador = Object.values(Jugador)[0];
-  //     console.log("Jugador",jugador)
-  //     setMatchedData({ ...jugador, type: 'Jugador' });
-  //   }
-  //   if (EntrenadorSuccess && Entrenador) {
-  //     const entrenador = Object.values(Entrenador)[0];
-  //     console.log("Entrenador",entrenador);
-  //     setMatchedData({ ...entrenador, type: 'Entrenador' });
-  //   }
-  //   if (DelegadoSuccess && Delegado) {
-  //     const delegado = Object.values(Delegado)[0];
-  //     console.log("Delegado",delegado);
-  //     setMatchedData({ ...delegado, type: 'Delegado' });
-  //   }
   if (JugadorEmailSuccess && JugadorEmail) {
     const jugador = Object.values(JugadorEmail)[0];
     console.log("Jugador",jugador)
-    setMatchedData({ ...jugador, type: 'Jugador' });
+    //setMatchedData({ ...jugador, type: 'Jugador' });
+    setDatosJugadoresEmail(jugador);
   }
   if (EntrenadorEmailSuccess && EntrenadorEmail) {
     const entrenador = Object.values(EntrenadorEmail)[0];
     console.log("Entrenador",entrenador);
-    setMatchedData({ ...entrenador, type: 'Entrenador' });
+    //setMatchedData({ ...entrenador, type: 'Entrenador' });
+    setDatosJEntrenadoresEmail(entrenador)
   }
   if (DelegadoEmailSuccess && DelegadoEmail) {
     const delegado = Object.values(DelegadoEmail)[0];
     console.log("Delegado",delegado);
-    setMatchedData({ ...delegado, type: 'Delegado' });
+    //setMatchedData({ ...delegado, type: 'Delegado' });
+    setDatosDelegadosEmail(delegado)
   }
   }, [JugadorEmailSuccess, EntrenadorEmailSuccess, DelegadoEmailSuccess, JugadorEmail, EntrenadorEmail, DelegadoEmail, Jugador, Entrenador, Delegado, JugadorSuccess, EntrenadorSuccess, DelegadoSuccess]);
 
   return (
     <View style={styles.container}>
-      {matchedData ? (
-        <Text> Hola {matchedData.nombre}!</Text>
+      {datosJEntrenadoresEmail ? (
+        <Text> Hola {datosJEntrenadoresEmail.nombre}!</Text>
+      ) : datosJugadoresEmail? (
+        <Text> Hola {datosJugadoresEmail.nombre}!</Text>
+      ) : datosDelegadosEmail? (
+        <Text> Hola {datosDelegadosEmail.nombre}!</Text>
       ) : (
         <Text> Bienvenido {email}! </Text>
       )}
