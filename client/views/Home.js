@@ -4,25 +4,14 @@ import {
   useGetDelegadoByEmailQuery,
   useGetJugadorByEmailQuery,
   useGetEntrenadorByEmailQuery,
-  useGetDelegadosQuery,
-  useGetEntrenadoresQuery,
-  useGetJugadoresQuery
 } from '../../server/servicesFireBase/services';
 
 export default function Home({ navigation, route }) {
   const { nombre, email } = (route.params || {});
 
-  const { data: Jugador, isSuccess: JugadorSuccess } = useGetJugadoresQuery();
-  const { data: Entrenador, isSuccess: EntrenadorSuccess } = useGetEntrenadoresQuery();
-  const { data: Delegado, isSuccess: DelegadoSuccess } = useGetDelegadosQuery();
-
- 
- 
   const { data: JugadorEmail, isSuccess: JugadorEmailSuccess } = useGetJugadorByEmailQuery(email);
   const { data: EntrenadorEmail, isSuccess: EntrenadorEmailSuccess } = useGetEntrenadorByEmailQuery(email);
   const { data: DelegadoEmail, isSuccess: DelegadoEmailSuccess } = useGetDelegadoByEmailQuery(email);
-
-  const [matchedData, setMatchedData] = useState(null);
   
   const [datosJugadoresEmail, setDatosJugadoresEmail] = useState(null)
   const [datosJEntrenadoresEmail, setDatosJEntrenadoresEmail] = useState(null)
@@ -47,7 +36,7 @@ export default function Home({ navigation, route }) {
     //setMatchedData({ ...delegado, type: 'Delegado' });
     setDatosDelegadosEmail(delegado)
   }
-  }, [JugadorEmailSuccess, EntrenadorEmailSuccess, DelegadoEmailSuccess, JugadorEmail, EntrenadorEmail, DelegadoEmail, Jugador, Entrenador, Delegado, JugadorSuccess, EntrenadorSuccess, DelegadoSuccess]);
+  }, [JugadorEmailSuccess, EntrenadorEmailSuccess, DelegadoEmailSuccess, JugadorEmail, EntrenadorEmail, DelegadoEmail]);
 
   return (
     <View style={styles.container}>

@@ -5,8 +5,8 @@ import { usePutJugadorMutation } from '../../server/servicesFireBase/services';
 
 const EditarDatos = () => {
     const route = useRoute();
-    const { jugador } = route.params;
-    const [datosJugador, setDatosJugador] = useState(jugador);
+    const { usuario } = route.params;
+    const [datosUsuario, setDatosUsuario] = useState(usuario);
     const [triggerPutJugador, { isLoading, error }] = usePutJugadorMutation();
 
     const handleOnChangeInput = (clave, valor) => {
