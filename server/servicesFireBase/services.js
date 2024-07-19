@@ -25,6 +25,10 @@ export const ApiJugadores = createApi({
         }),
         getJugadorByEmail: builder.query({
             query: (email) => `Jugadores.json?orderBy="email"&equalTo="${email}"`
+        }),getEntrenadorByEmail: builder.query({
+            query: (email) => `Entrenadores.json?orderBy="email"&equalTo="${email}"`
+        }),getDelegadoByEmail: builder.query({
+            query: (email) => `Delegados.json?orderBy="email"&equalTo="${email}"`
         }),
         getEntrenadorById: builder.query({
             query: (entrenadorId) => `Entrenadores.json?orderBy="id"&equalTo="${entrenadorId}"`
@@ -72,9 +76,11 @@ export const {
     useGetJugadoresByClubQuery,
     useGetDelegadoByIdQuery,
     useGetEntrenadorByIdQuery,
+    useGetJugadorByEmailQuery,
+    useGetDelegadoByEmailQuery,
+    useGetEntrenadorByEmailQuery,
     usePostJugadorMutation,
     usePostEntrenadorMutation,
     usePostDelegadoMutation,
     usePutJugadorMutation,
-    useGetJugadorByEmailQuery
 } = ApiJugadores;
