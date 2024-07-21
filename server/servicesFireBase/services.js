@@ -58,12 +58,26 @@ export const ApiJugadores = createApi({
             }),
         }),
         putJugador: builder.mutation({
-            query: (jugador) => ({
+            query: (datosUsuario) => ({
                 url: 'Jugadores.json',
                 method: 'PUT',
-                body: jugador
+                body: datosUsuario
             }),
-        })
+        }),
+        putEntrenador: builder.mutation({
+            query: (datosUsuario) => ({
+                url: 'Entrenadores.json',
+                method: 'PUT',
+                body: datosUsuario
+            }),
+        }),
+        putDelegado: builder.mutation({
+            query: (datosUsuario) => ({
+                url: 'Delegados.json',
+                method: 'PUT',
+                body: datosUsuario
+            }),
+        }),
     })
 });
 
@@ -83,4 +97,6 @@ export const {
     usePostEntrenadorMutation,
     usePostDelegadoMutation,
     usePutJugadorMutation,
+    usePutDelegadoMutation,
+    usePutEntrenadorMutation,
 } = ApiJugadores;
