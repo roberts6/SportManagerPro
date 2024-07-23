@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { usePutJugadorMutation, usePutDelegadoMutation, usePutEntrenadorMutation } from '../../server/servicesFireBase/services';
+import { usePutJugadorIdMutation, usePutDelegadoIdMutation, usePutEntrenadorIdMutation } from '../../server/servicesFireBase/services';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
 import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const EditarDatos = () => {
-    const route = useRoute();
-    const { email } = route.params;
+const EditarDatos = ({route}) => {
+    const { usuarioDatos } = route.params;
+    console.log("email en editar", usuarioDatos.email)
 
     const { data: dataClubes } = useGetClubesQuery();
 
-    const usuario = useBusquedaXmail(email);
+    const usuarioEmail = useBusquedaXmail(usuarioDatos.email);
     const [datosUsuario, setDatosUsuario] = useState(null);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [fecha, setFecha] = useState(new Date());
 
     useEffect(() => {
-        if (usuario) {
-            setDatosUsuario(usuario);
+        if (usuarioEmail) {
+            setDatosUsuario(usuarioEmail);
         }
-    }, [usuario]);
+    }, [usuarioEmail]);
 
-    const [triggerPutJugador, { isLoadingJugador, errorJugador }] = usePutJugadorMutation();
-    const [triggerPutDelegado, { isLoadingDelegado, errorDelegado }] = usePutDelegadoMutation();
-    const [triggerPutEntrenador, { isLoadingEntrenador, errorEntrenador }] = usePutEntrenadorMutation();
+    const [triggerPutJugador, { isLoadingJugador, errorJugador }] = usePutJugadorIdMutation();
+    const [triggerPutDelegado, { isLoadingDelegado, errorDelegado }] = usePutDelegadoIdMutation();
+    const [triggerPutEntrenador, { isLoadingEntrenador, errorEntrenador }] = usePutEntrenadorIdMutation();
 
     const handleOnChangeInput = (clave, valor) => {
         setDatosUsuario(prevState => ({ ...prevState, [clave]: valor }));
@@ -105,15 +105,15 @@ const EditarDatos = () => {
         return;
     }
 
-//     if (!password || password.length <= 3) {
-//         alert('Por favor ingresa un password mayor a 4 caracteres')
-//         return;
-//     }
+    if (!password || password.length <= 3) {
+        alert('Por favor ingresa un password mayor a 4 caracteres')
+        return;
+    }
 
-// if (confirmacionPassword !== password) {
-//     alert("La confirmación de tu password no es igual al password ingresado")
-//     return;
-// }
+if (confirmacionPassword !== password) {
+    alert("La confirmación de tu password no es igual al password ingresado")
+    return;
+}
 
 if (!fecha_nacimiento) {
     alert('Por favor ingresá tu fecha de nacimiento.');
@@ -139,15 +139,15 @@ if (!fecha_nacimiento) {
     }
         try {
             if (datosUsuario.rol === "Jugador") {
-                await triggerPutJugador(datosUsuario);
+                await triggerPutJugador(datosUsuario, datosUsuario.id);
                 console.log("esto se envía con modificaciones",datosUsuario)
                 alert('Datos editados exitosamente');    
             } else if (datosUsuario.rol === "Delegado") {
-                await triggerPutDelegado(datosUsuario);
+                await triggerPutDelegado(datosUsuario, datosUsuario.id);
             console.log("esto se envía con modificaciones",datosUsuario)
             alert('Datos editados exitosamente');
             }else {
-                await triggerPutEntrenador(datosUsuario);
+                await triggerPutEntrenador(datosUsuario, datosUsuario.id);
             console.log("esto se envía con modificaciones",datosUsuario)
             alert('Datos editados exitosamente');
             }
@@ -165,7 +165,7 @@ if (!fecha_nacimiento) {
         );
     }
 
-    const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia } = datosUsuario;
+    const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = datosUsuario;
 
     return (
         <ScrollView style={styles.scrollView}>
@@ -218,6 +218,24 @@ if (!fecha_nacimiento) {
                         style={styles.placeholder}
                     />
                 </View>
+                <View style={styles.input}>
+                <TextInput
+                    placeholder='Password'
+                    onChangeText={(valor) => handleOnChangeInput('password', valor)}
+                    value={password}
+                    style={styles.placeholder}
+                    secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
+                />
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    placeholder='Confirmar Password'
+                    onChangeText={(valor) => handleOnChangeInput('confirmacionPassword', valor)}
+                    value={confirmacionPassword}
+                    style={styles.placeholder}
+                    secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
+                />
+            </View>
                 <View style={styles.inputContainer}>
                     <Text>Teléfono</Text>
                     <TextInput

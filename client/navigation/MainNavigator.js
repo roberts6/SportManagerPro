@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthStackNavigator from "./AuthStackNavigation";
-import Home from "../views/Home";
+import Inicio from "../views/Inicio";
 import { useSelector } from "react-redux";
 
 
@@ -10,7 +10,7 @@ const MainNavigator = () => {
     const {user} = useSelector((state) => state.auth.value)
     return(
         <NavigationContainer>
-            {userLogged ? <Home /> : <AuthStackNavigator/> }
+            {userLogged ? <Inicio /> : <AuthStackNavigator/> }
         </NavigationContainer>
     )
 }

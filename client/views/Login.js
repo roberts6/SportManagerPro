@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { useSignInMutation } from '../../server/servicesFireBase/credencialesApi';
 import { setUser } from '../features/User/UserSlice';
-import { RFC_2822 } from 'moment';
 
 const Login = () => {
     const [id, setId] = useState('');
@@ -16,29 +15,19 @@ const Login = () => {
     const [triggerSignIn, result] = useSignInMutation();
 
     useEffect(() => {
-        // if (result.isSuccess) {
-        //     dispatch(
-        //         setUser({
-        //             id: result.data.id,
-        //             email: result.data.email,
-        //             idToken: result.data.idToken
-        //         })
-        //     );
-        //     navigation.navigate('Inicio', {id, nombre, email, password }); // Navega a la pantalla principal después del login y envía los datos del email y password
-        // } else if (result.isError) {
-        //     alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
-        //     console.log("este es el error:",result.status)
-        // }
         if (result.isSuccess) {
-            const { id, nombre, email, password } = result.data;
+            const { idToken, displayName, email } = result.data;
             dispatch(
                 setUser({
-                    displayName:result.data.displayName,
-                    email: result.data.email,
-                    idToken: result.data.idToken
+                    displayName: displayName,
+                    email: email,
+                    idToken: idToken
                 })
             );
-            navigation.navigate('Inicio', { id, nombre, email, password }); 
+            //navigation.navigate('Inicio', { id, nombre, email, password }); 
+            navigation.navigate('Inicio', { usuario: result.data, showTabNavigator: true });
+            //navigation.navigate('TabNavigator', { usuario: result.data });
+
             console.log("datos que vienen con el result",result.data)
         } else if (result.isError) {
             alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.');

@@ -30,11 +30,12 @@ export const ApiJugadores = createApi({
         }),getDelegadoByEmail: builder.query({
             query: (email) => `Delegados.json?orderBy="email"&equalTo="${email}"`
         }),
-        getEntrenadorById: builder.query({
-            query: (entrenadorId) => `Entrenadores.json?orderBy="id"&equalTo="${entrenadorId}"`
-        }),
-        getDelegadoById: builder.query({
-            query: (delegadoId) => `Delegados.json?orderBy="id"&equalTo="${delegadoId}"`
+        getJugadorById: builder.query({
+            query: (id) => `Jugadores.json?orderBy="id"&equalTo="${id}"`
+        }),getEntrenadorById: builder.query({
+            query: (id) => `Entrenadores.json?orderBy="id"&equalTo="${id}"`
+        }),getDelegadoById: builder.query({
+            query: (id) => `Delegados.json?orderBy="id"&equalTo="${id}"`
         }),
         postJugador: builder.mutation({
             query: (jugador) => ({
@@ -57,23 +58,23 @@ export const ApiJugadores = createApi({
                 body: entrenador
             }),
         }),
-        putJugador: builder.mutation({
+        putJugadorId: builder.mutation({
             query: (datosUsuario) => ({
-                url: 'Jugadores.json',
+                url: `Jugadores.json?orderBy="id"&equalTo="${datosUsuario.id}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
         }),
-        putEntrenador: builder.mutation({
+        putEntrenadorId: builder.mutation({
             query: (datosUsuario) => ({
-                url: 'Entrenadores.json',
+                url: `Entrenadores.json?orderBy="id"&equalTo="${datosUsuario.id}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
         }),
-        putDelegado: builder.mutation({
+        putDelegadoId: builder.mutation({
             query: (datosUsuario) => ({
-                url: 'Delegados.json',
+                url: `Delegados.json?orderBy="id"&equalTo="${datosUsuario.id}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
@@ -96,7 +97,8 @@ export const {
     usePostJugadorMutation,
     usePostEntrenadorMutation,
     usePostDelegadoMutation,
-    usePutJugadorMutation,
-    usePutDelegadoMutation,
-    usePutEntrenadorMutation,
+    usePutJugadorIdMutation,
+    usePutDelegadoIdMutation,
+    usePutEntrenadorIdMutation,
+
 } = ApiJugadores;

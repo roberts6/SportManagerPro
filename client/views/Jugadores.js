@@ -5,6 +5,7 @@ import FiltroHabilitado from '../filtros/filtroHabilitado.js';
 import FiltroClub from '../filtros/filtroClub.js';
 import { useNavigation } from '@react-navigation/native';
 import { useGetJugadoresByClubQuery, useGetJugadoresQuery } from '../../server/servicesFireBase/services.js';
+import TabNavigator from '../tabs/TabNavigator.js';
 
 const Jugadores = () => {
     const [filteredNombre, setFilteredNombre] = useState([]);
@@ -77,6 +78,7 @@ const Jugadores = () => {
                 )}
             />            
             )}
+            <TabNavigator/>
         </View>
     );
 };
