@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform } from 'react-native';
-import { useRoute } from '@react-navigation/native';
 import { usePutJugadorIdMutation, usePutDelegadoIdMutation, usePutEntrenadorIdMutation } from '../../server/servicesFireBase/services';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
+import {useBusquedaXId} from '../features/utilidades/busquedaXid'
 import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const EditarDatos = ({route}) => {
+const EditarDatos = ({route, navigation}) => {
     const { usuarioDatos } = route.params;
-    console.log("email en editar", usuarioDatos.email)
+    console.log("3 - objeto recibido en editar", usuarioDatos)
 
     const { data: dataClubes } = useGetClubesQuery();
 
     const usuarioEmail = useBusquedaXmail(usuarioDatos.email);
+    //const usuarioId = useBusquedaXId(id)
     const [datosUsuario, setDatosUsuario] = useState(null);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);

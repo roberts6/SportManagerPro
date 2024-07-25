@@ -20,7 +20,7 @@ const DetalleJugador = ({ route }) => {
     };
 
     const handleEditarJugadorPress = () => {
-        navigation.navigate('TabNavigator', { screen: 'Editar Datos', params: { jugador } }); 
+        navigation.navigate('Datos usuario', { screen: 'Editar Datos', usuarioDatos: { jugador } }); 
     };
 
     const fechaFormateada = moment(jugador.fecha_nacimiento).format('DD/MM/YYYY');
@@ -49,10 +49,14 @@ const DetalleJugador = ({ route }) => {
                 />
             </View>
 
+            {/* 
+            
+            debería estar este botón acá??
+            
             <Button
                 title='✏️'
                 onPress={handleEditarJugadorPress}
-            />
+            /> */}
         </View>
     );
 };

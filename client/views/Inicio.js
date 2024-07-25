@@ -1,68 +1,60 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
-import TabNavigator from '../tabs/TabNavigator';
+import React from 'react';
+import { View, Text, StyleSheet, Image, Button, SafeAreaView } from 'react-native';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
+import { Colores } from '../features/utilidades/colores';
+import VistaActual from '../features/utilidades/VistaActual';
+
 
 const Inicio = ({ route, navigation }) => {
-  const { usuario, showTabNavigator } = route.params || {};
+  const { usuario } = route.params || {};
   const email = usuario ? usuario.email : null;
   const usuarioDatos = useBusquedaXmail(email);
 
-  const [mostrarTabNavigator, setMostrarTabNavigator] = useState(false);
-
-  const mostrarBotones = () => {
-    setMostrarTabNavigator(false);
-  };
-
-  const mostrarTab = () => {
-    setMostrarTabNavigator(true);
-  };
+VistaActual();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {usuarioDatos && usuarioDatos.nombre ? ( // Verifica si usuarioDatos no es null y contiene la propiedad 'nombre'
-          <Text>Hola {usuarioDatos.nombre}!</Text>
-        ) : (
-          <Text>Cargando...</Text> // Muestra un mensaje de carga en caso de que usuarioDatos sea null o no tenga 'nombre'
-        )}
-        <View style={styles.vista}>
-          <Image source={require('../imagenes/avatarX.png')} style={styles.image} />
+    <SafeAreaView style={styles.safeContainer}>
+      <View style={styles.container}>
+        <View style={styles.content}>
+          {usuarioDatos && usuarioDatos.nombre ? (
+            <Text style={styles.greeting}>Hola {usuarioDatos.nombre}!</Text>
+          ) : (
+            <Text style={styles.greeting}>Sin datos del usuario...</Text>
+          )}
+          <View style={styles.vista}>
+            <Image source={require('../imagenes/avatarX.png')} style={styles.image} />
+          </View>
+          <View style={styles.buttons}>
+            <Button title="Jugadores" onPress={() => navigation.navigate('Jugadores')} />
+            <Button title="Clubes" onPress={() => navigation.navigate('Clubes')} />
+            <Button title="Agregar Jugador" onPress={() => navigation.navigate('Agregar Jugador')} />
+            <Button title="Mi Perfil" onPress={() => navigation.navigate('Datos usuario', { usuarioDatos })} /> 
+          </View>
         </View>
       </View>
-      {!mostrarTabNavigator && (
-        <View>
-          <Button title="Jugadores" onPress={() => { mostrarTab(); mostrarBotones(); navigation.navigate('Jugadores'); }} />
-          <Button title="Clubes" onPress={() => { mostrarTab(); mostrarBotones(); navigation.navigate('Clubes'); }} />
-          <Button title="Agregar Jugador" onPress={() => { mostrarTab(); mostrarBotones(); navigation.navigate('Agregar Jugador'); }} />
-        </View>
-      )}
-      {mostrarTabNavigator && <TabNavigator usuarioDatos={usuarioDatos} />}
-      {/* <TabNavigator usuarioDatos={usuarioDatos} /> */}
-    </View>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: Colores.verdeClaro,
+  },
   container: {
     flex: 1,
-    marginTop: 35,
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   vista: {
-    marginTop: 35,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
-  },
-  header: {
-    marginTop: 35,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   image: {
     width: 50,
@@ -70,7 +62,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 10,
   },
+  buttons: {
+    marginBottom: 20,
+  },
+  greeting: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default Inicio;
-

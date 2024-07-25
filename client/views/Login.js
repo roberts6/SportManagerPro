@@ -1,37 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
+import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { useSignInMutation } from '../../server/servicesFireBase/credencialesApi';
 import { setUser } from '../features/User/UserSlice';
 
 const Login = () => {
-    const [id, setId] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
-
     const dispatch = useDispatch();
     const [triggerSignIn, result] = useSignInMutation();
 
     useEffect(() => {
         if (result.isSuccess) {
             const { idToken, displayName, email } = result.data;
-            dispatch(
-                setUser({
-                    displayName: displayName,
-                    email: email,
-                    idToken: idToken
-                })
-            );
-            //navigation.navigate('Inicio', { id, nombre, email, password }); 
+            dispatch(setUser({ displayName, email, idToken }));
             navigation.navigate('Inicio', { usuario: result.data, showTabNavigator: true });
-            //navigation.navigate('TabNavigator', { usuario: result.data });
-
-            console.log("datos que vienen con el result",result.data)
+            //navigation.navigate('Datos usuario', { usuarioDatos: result.data });
+            console.log("1 - datos que vienen con el result", result.data);
         } else if (result.isError) {
-            alert('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
-            console.log("Error:", result.status)
+            Alert.alert('Error', 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+            console.log("Error:", result.status);
         }
     }, [result, dispatch, navigation]);
 
@@ -43,26 +33,25 @@ const Login = () => {
     const iniciarSesion = async () => {
         // Validaciones de email y contraseña
         if (!email) {
-            alert('Por favor ingrese su email.');
+            Alert.alert('Error', 'Por favor ingrese su email.');
             return;
         }
 
         if (!validarEmail(email)) {
-            alert('Por favor ingrese un email válido.');
+            Alert.alert('Error', 'Por favor ingrese un email válido.');
             return;
         }
 
         if (!password || password.length <= 3) {
-            alert('Por favor ingrese una contraseña mayor a 4 caracteres.');
+            Alert.alert('Error', 'Por favor ingrese una contraseña mayor a 4 caracteres.');
             return;
         }
 
         try {
-            // Llama a la función de login con email y password
             await triggerSignIn({ email, password });
             console.log('login:', email, password);
         } catch (error) {
-            alert('Ups!! Hubo un error. No pudimos iniciar sesión.');
+            Alert.alert('Error', 'Ups!! Hubo un error. No pudimos iniciar sesión.');
             console.error('Error al iniciar sesión:', error);
         }
     };
@@ -72,7 +61,7 @@ const Login = () => {
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Email'
-                    onChangeText={(valor) => setEmail(valor)}
+                    onChangeText={setEmail}
                     value={email}
                     autoCapitalize='none'
                     keyboardType='email-address'
@@ -82,10 +71,10 @@ const Login = () => {
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder='Password'
-                    onChangeText={(valor) => setPassword(valor)}
+                    onChangeText={setPassword}
                     value={password}
                     style={styles.placeholder}
-                    secureTextEntry={true} // Esto hace que el texto se oculte como contraseña
+                    secureTextEntry={true} 
                 />
             </View>
             <View style={styles.buttonContainer}>

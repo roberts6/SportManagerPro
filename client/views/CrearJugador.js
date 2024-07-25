@@ -257,6 +257,7 @@ if (!fecha_nacimiento) {
                     value={dato.email}
                     keyboardType='email-address'
                     style={styles.placeholder}
+                    autoCapitalize='none'
                 />
             </View>
             <View style={[styles.input, styles.fecha]}>
