@@ -1,34 +1,103 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, SafeAreaView } from 'react-native';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
 import { Colores } from '../features/utilidades/colores';
 import VistaActual from '../features/utilidades/VistaActual';
-
+import { useSelector } from 'react-redux';
+import Avatar from '../imagenes/avatarX.png'; 
+import { useGetFotoPerfilQuery } from '../../server/servicesFireBase/services'; 
 
 const Inicio = ({ route, navigation }) => {
   const { usuario } = route.params || {};
   const email = usuario ? usuario.email : null;
   const usuarioDatos = useBusquedaXmail(email);
 
-VistaActual();
+  const { localId } = useSelector((state) => state.auth.value); 
+  const { data: imageFromDataBase } = useGetFotoPerfilQuery(localId);
+
+  VistaActual();
+
+  if (imageFromDataBase) {
+    console.log("Base64 Image Data from DB en Inicio OK");
+  } else {
+    console.log("No image data from database en inicio");
+  }
+
+  const base64Image = imageFromDataBase?.Image;
+
+  const isBase64 = (str) => {
+    if (typeof str !== 'string') {
+      return false;
+    }
+    const base64Pattern = /^data:image\/(jpeg|png);base64,/;
+    return base64Pattern.test(str);
+  };
+
+  const profileImageURI = base64Image && isBase64(base64Image) 
+    ? base64Image 
+    : undefined;
+
+  // agrega o actualiza profileImageURI en usuarioDatos
+  const completeUsuarioDatos = { ...usuarioDatos, profileImageURI: profileImageURI || Avatar };
+  //console.log("este es el objeto completo con foto en Inicio --> ",completeUsuarioDatos)  el objeto es correcto! 
 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
         <View style={styles.content}>
-          {usuarioDatos && usuarioDatos.nombre ? (
-            <Text style={styles.greeting}>Hola {usuarioDatos.nombre}!</Text>
+          {completeUsuarioDatos && completeUsuarioDatos.nombre ? (
+            <Text style={styles.greeting}>Hola {completeUsuarioDatos.nombre}!</Text>
           ) : (
             <Text style={styles.greeting}>Sin datos del usuario...</Text>
           )}
           <View style={styles.vista}>
-            <Image source={require('../imagenes/avatarX.png')} style={styles.image} />
+            <Image source={completeUsuarioDatos.profileImageURI ? { uri: completeUsuarioDatos.profileImageURI } : require('../imagenes/avatarX.png')} style={styles.image} />
           </View>
           <View style={styles.buttons}>
-            <Button title="Jugadores" onPress={() => navigation.navigate('Jugadores')} />
-            <Button title="Clubes" onPress={() => navigation.navigate('Clubes')} />
-            <Button title="Agregar Jugador" onPress={() => navigation.navigate('Agregar Jugador')} />
-            <Button title="Mi Perfil" onPress={() => navigation.navigate('Datos usuario', { usuarioDatos })} /> 
+              <Pressable
+                style={({ pressed }) => [
+                  {
+                    opacity: pressed ? 0.6 : 1
+                  },
+                  styles.button
+                ]}
+                onPress={() => navigation.navigate('Jugadores')}
+              >
+                <Text style={styles.buttonText}>Jugadores</Text>
+              </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.6 : 1
+                },
+                styles.button
+              ]}
+              onPress={() => navigation.navigate('Clubes')}
+            >
+              <Text style={styles.buttonText}>Clubes</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.6 : 1
+                },
+                styles.button
+              ]}
+              onPress={() => navigation.navigate('Agregar Jugador')}
+            >
+              <Text style={styles.buttonText}>Agregar Jugador</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.6 : 1
+                },
+                styles.button
+              ]}
+              onPress={() => navigation.navigate('Datos usuario', { completeUsuarioDatos: completeUsuarioDatos })} // envía el objeto completo completeUsuarioDatos
+            >
+              <Text style={styles.buttonText}>Mi Perfil</Text>
+            </Pressable>
           </View>
         </View>
       </View>
@@ -63,7 +132,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   buttons: {
+    width: '100%',
+    alignItems: 'center',
     marginBottom: 20,
+  },
+  button: {
+    backgroundColor: Colores.verde2, 
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    width: '80%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
   },
   greeting: {
     fontSize: 18,

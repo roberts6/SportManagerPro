@@ -10,6 +10,7 @@ import TabNavigator from '../tabs/TabNavigator';
 import AuthStackNavigator from './AuthStackNavigation';
 import MiPerfil from '../views/MiPerfil';
 import EditarDatos from '../views/editarDatos';
+import Camara from '../features/utilidades/Camara.js'
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Jugadores" component={Jugadores} />
             <Stack.Screen name="Información Jugador" component={DetalleJugador} />
             <Stack.Screen name="Estadísticas" component={Estadisticas} />
+            <Stack.Screen name="Camara" component={Camara} />
         </Stack.Navigator>
     );
 };

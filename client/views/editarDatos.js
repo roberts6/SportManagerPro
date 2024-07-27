@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform } from 'react-native';
+import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform, Image } from 'react-native';
 import { usePutJugadorIdMutation, usePutDelegadoIdMutation, usePutEntrenadorIdMutation } from '../../server/servicesFireBase/services';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
 import {useBusquedaXId} from '../features/utilidades/busquedaXid'
 import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Colores } from '../features/utilidades/colores';
+import Avatar from '../imagenes/avatarX.png'
 
 const EditarDatos = ({route, navigation}) => {
-    const { usuarioDatos } = route.params;
-    console.log("3 - objeto recibido en editar", usuarioDatos)
+    const { completeUsuarioDatos } = route.params;
+    console.log("3 - objeto recibido en editar", completeUsuarioDatos)
 
     const { data: dataClubes } = useGetClubesQuery();
 
-    const usuarioEmail = useBusquedaXmail(usuarioDatos.email);
+    const usuarioEmail = useBusquedaXmail(completeUsuarioDatos.email);
     //const usuarioId = useBusquedaXId(id)
     const [datosUsuario, setDatosUsuario] = useState(null);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
@@ -66,7 +68,7 @@ const EditarDatos = ({route, navigation}) => {
     };
 
     const guardarCambiosUsuario = async () => {
-        const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = datosUsuario;
+        const { nombre, apellido, profileImageURI, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = completeUsuarioDatos;
 
     if (!nombre) {
         alert('Por favor ingresá tu nombre.');
@@ -166,11 +168,31 @@ if (!fecha_nacimiento) {
         );
     }
 
-    const { nombre, apellido, dni, fecha_nacimiento, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = datosUsuario;
+    const { nombre, apellido, dni, fecha_nacimiento, profileImageURI, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = completeUsuarioDatos;
 
     return (
         <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
+            <View>
+                {
+profileImageURI? (
+    <Image source={{uri: profileImageURI}} style={styles.imagen} />
+):(
+    <Image source={Avatar} style={styles.imagen} />
+)
+                }
+            </View>
+            <Pressable
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.6 : 1
+                },
+                styles.button
+              ]}
+              onPress={() => navigation.navigate('Camara', {completeUsuarioDatos})}
+            >
+              <Text style={styles.buttonText}>Agregar Foto</Text>
+            </Pressable>
                 <View style={[styles.inputContainer, { marginTop: 30 }]}>
                     <Text>Nombre</Text>
                     <TextInput
@@ -355,7 +377,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     button: {
-        backgroundColor: 'green',
+        backgroundColor: Colores.verde2,
         padding: 15,
         borderRadius: 5,
         alignItems: 'center'
@@ -370,7 +392,13 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 5,
         marginVertical: 10,
-    }
+    },
+    imagen: {
+        width: 200,
+        height: 200,
+        borderRadius: 100, 
+        marginBottom: 15
+    },
 });
 
 export default EditarDatos;

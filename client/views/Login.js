@@ -14,10 +14,9 @@ const Login = () => {
 
     useEffect(() => {
         if (result.isSuccess) {
-            const { idToken, displayName, email } = result.data;
-            dispatch(setUser({ displayName, email, idToken }));
+            const { idToken, displayName, email, localId } = result.data;
+            dispatch(setUser({ displayName, email, idToken, localId }));
             navigation.navigate('Inicio', { usuario: result.data, showTabNavigator: true });
-            //navigation.navigate('Datos usuario', { usuarioDatos: result.data });
             console.log("1 - datos que vienen con el result", result.data);
         } else if (result.isError) {
             Alert.alert('Error', 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
@@ -48,7 +47,7 @@ const Login = () => {
         }
 
         try {
-            await triggerSignIn({ email, password });
+            await triggerSignIn({ email, password, returnSecureToken: true });
             console.log('login:', email, password);
         } catch (error) {
             Alert.alert('Error', 'Ups!! Hubo un error. No pudimos iniciar sesión.');

@@ -2,10 +2,14 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
+import SeleccionarImagen from '../features/utilidades/Camara';
+import { Colores } from '../features/utilidades/colores';
 
 const DetalleJugador = ({ route }) => {
     const { jugador } = route.params; 
     const navigation = useNavigation();
+
+    //const Imagen = SeleccionarImagen()
 
     if (!jugador) {
         return (
@@ -73,11 +77,12 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     text: {
-        marginBottom: 6,
-        fontSize: 15
+        // marginBottom: 6,
+        fontSize: 15,
+        marginVertical: 4
     },
     botonContainer: {
-        backgroundColor: 'green',
+        backgroundColor: Colores.verde2,
         padding: 10,
         marginVertical: 50,
         marginHorizontal: 50,
