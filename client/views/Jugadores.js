@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Text, FlatList, Pressable, ActivityIndicator, Image } from 'react-native';
 import FiltroNombre from '../filtros/filtroNombre.js';
 import FiltroHabilitado from '../filtros/filtroHabilitado.js';
 import FiltroClub from '../filtros/filtroClub.js';
 import { useNavigation } from '@react-navigation/native';
-import { useGetJugadoresByClubQuery, useGetJugadoresQuery } from '../../server/servicesFireBase/services.js';
-
+import { useGetJugadoresQuery } from '../../server/servicesFireBase/services.js';
+import Avatar from '../imagenes/avatarX.png'; // imagen por default si no hay profileImageURI
+import useFotoPerfilJugadores from '../features/utilidades/fotoPerfilJugadores.js';
 
 const Jugadores = () => {
     const [filteredNombre, setFilteredNombre] = useState([]);
@@ -13,34 +14,55 @@ const Jugadores = () => {
     const [search, setSearch] = useState('');
     const [searchClub, setSearchClub] = useState('');
     const navigation = useNavigation();
-    
-    const { data, error, isLoading } = useGetJugadoresQuery(); 
 
-    //console.log("esto trae data en Jugadores",data)
+    const { data, error, isLoading } = useGetJugadoresQuery();
+    const profileImageURI = useFotoPerfilJugadores(); 
+
+    // transforma el objeto data en un array
+    const jugadoresArray = useMemo(() => {
+        return data && typeof data === 'object' ? Object.values(data) : [];
+    }, [data]);
+
+    // ahora que es un array me permite hacer un .map que agrega profileImageURI a cada item "jugador" dentro
+    const completeUsuarioDatos = useMemo(() => {
+        return jugadoresArray.map((jugador) => {
+            
+            console.log("Jugador localId: ", jugador.localId); // trae el localId correctamente y coincide con el localId de la foto que está en profileImages de mi firebase
+             //const profileImageURI = useFotoPerfilJugadores(jugador.localId); // me da un error de re renderizado
+    
+            return {
+                ...jugador,
+                profileImageURI: profileImageURI? profileImageURI : Avatar, 
+            };
+        });
+    }, [jugadoresArray]);
+
 
     useEffect(() => {
-        if (data) { 
-            let filteredData = Object.values(data).filter(jugador =>
-                (jugador.nombre && jugador.apellido && (jugador.nombre.toLowerCase().includes(search.toLowerCase()) ||
-                jugador.apellido.toLowerCase().includes(search.toLowerCase()))
-            ));
-    
+        if (completeUsuarioDatos.length > 0) {
+            let filteredData = completeUsuarioDatos.filter(jugador =>
+                (jugador.nombre && jugador.apellido && 
+                (jugador.nombre.toLowerCase().includes(search.toLowerCase()) ||
+                jugador.apellido.toLowerCase().includes(search.toLowerCase())))
+            );
+
             if (habilitadoFilter !== null) {
                 filteredData = filteredData.filter(jugador =>
                     (habilitadoFilter === false && jugador.habilitado === false) || jugador.habilitado === habilitadoFilter
                 );
             }
-    
+
             if (searchClub) {
                 filteredData = filteredData.filter(jugador =>
                     jugador.club && jugador.club.toLowerCase().includes(searchClub.toLowerCase())
                 );
             }
-    
+
             setFilteredNombre(filteredData);
+        } else {
+            setFilteredNombre([]);
         }
-    }, [search, data, habilitadoFilter, searchClub]);    
-    
+    }, [search, completeUsuarioDatos, habilitadoFilter, searchClub]);
 
     const handlePlayerPress = (item) => {
         navigation.navigate('Información Jugador', { jugador: item });
@@ -62,21 +84,22 @@ const Jugadores = () => {
                 <Text style={{ color: 'red', textAlign: 'center' }}>Error: {error.message}</Text>
             ) : (
                 <FlatList
-                data={filteredNombre}
-                keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-                renderItem={({ item }) => (
-                    <Pressable onPress={() => handlePlayerPress(item)}>
-                        <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', padding: 10 }}>
-                            <Text style={{ fontWeight: 'bold' }}>{item.club}</Text>
-                            <Text style={{ fontSize: 16, color: 'black' }}>{item.nombre}  {item.apellido}</Text>
-                            <Text>Edad: {item.edad}</Text>
-                            <Text>Categoría: {item.categoria}</Text>
-                            <Text>Género: {item.genero}</Text>
-                            <Text>Habilitado: <Text style={{ fontWeight: 'bold' }}>{item.habilitado === true ? "Sí" : "No"}</Text></Text>
-                        </View>
-                    </Pressable>
-                )}
-            />            
+                    data={filteredNombre}
+                    keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
+                    renderItem={({ item }) => (
+                        <Pressable onPress={() => handlePlayerPress(item)}>
+                            <View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', padding: 10 }}>
+                                <Image source={item.profileImageUri ? { uri: item.profileImageUri } : Avatar} style={{ width: 50, height: 50, borderRadius: 25 }} />
+                                <Text style={{ fontWeight: 'bold' }}>{item.club}</Text>
+                                <Text style={{ fontSize: 16, color: 'black' }}>{item.nombre} {item.apellido}</Text>
+                                <Text>Edad: {item.edad}</Text>
+                                <Text>Categoría: {item.categoria}</Text>
+                                <Text>Género: {item.genero}</Text>
+                                <Text>Habilitado: <Text style={{ fontWeight: 'bold' }}>{item.habilitado === true ? "Sí" : "No"}</Text></Text>
+                            </View>
+                        </Pressable>
+                    )}
+                />
             )}
         </View>
     );

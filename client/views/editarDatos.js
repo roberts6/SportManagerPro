@@ -191,7 +191,7 @@ profileImageURI? (
               ]}
               onPress={() => navigation.navigate('Camara', {completeUsuarioDatos})}
             >
-              <Text style={styles.buttonText}>Agregar Foto</Text>
+              <Text style={styles.buttonText}>Cambiar Foto</Text>
             </Pressable>
                 <View style={[styles.inputContainer, { marginTop: 30 }]}>
                     <Text>Nombre</Text>

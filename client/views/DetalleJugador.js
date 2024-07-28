@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import SeleccionarImagen from '../features/utilidades/Camara';
 import { Colores } from '../features/utilidades/colores';
+import Avatar from '../imagenes/avatarX.png'
 
 const DetalleJugador = ({ route }) => {
     const { jugador } = route.params; 
@@ -19,6 +20,8 @@ const DetalleJugador = ({ route }) => {
         );
     }
 
+    console.log("datos en jugador -->", jugador)
+
     const handleEstadisticasPress = () => {
         navigation.navigate('Estadísticas', { jugador });
     };
@@ -32,7 +35,11 @@ const DetalleJugador = ({ route }) => {
     return (
         <View style={styles.container}>
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{jugador.nombre} {jugador.apellido}</Text>
-            <Image source={require('../imagenes/avatarX.png')} style={styles.image} />
+            {/* <Image source={require('../imagenes/avatarX.png')} style={styles.image} /> */}
+            <Image 
+                source={jugador.profileImageUri ? { uri: jugador.profileImageUri } : Avatar} // Ensure property name consistency
+                style={styles.image} 
+            />
             <Text style={styles.text}>{jugador.club}</Text>
             <Text style={styles.text}>Fecha de nacimiento: {fechaFormateada}</Text>
             <Text style={styles.text}>Edad: {jugador.edad}</Text>

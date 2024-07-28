@@ -3,43 +3,24 @@ import { View, Text, StyleSheet, Image, Pressable, SafeAreaView } from 'react-na
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
 import { Colores } from '../features/utilidades/colores';
 import VistaActual from '../features/utilidades/VistaActual';
-import { useSelector } from 'react-redux';
 import Avatar from '../imagenes/avatarX.png'; 
-import { useGetFotoPerfilQuery } from '../../server/servicesFireBase/services'; 
+import useFotoPerfil from '../features/utilidades/traeFotoPerfilDesdeDB';
 
 const Inicio = ({ route, navigation }) => {
   const { usuario } = route.params || {};
   const email = usuario ? usuario.email : null;
+  const usuariolocalId = usuario ? usuario.localId : null;
   const usuarioDatos = useBusquedaXmail(email);
 
-  const { localId } = useSelector((state) => state.auth.value); 
-  const { data: imageFromDataBase } = useGetFotoPerfilQuery(localId);
+  console.log("localId en Inicio",usuariolocalId)
 
   VistaActual();
 
-  if (imageFromDataBase) {
-    console.log("Base64 Image Data from DB en Inicio OK");
-  } else {
-    console.log("No image data from database en inicio");
-  }
-
-  const base64Image = imageFromDataBase?.Image;
-
-  const isBase64 = (str) => {
-    if (typeof str !== 'string') {
-      return false;
-    }
-    const base64Pattern = /^data:image\/(jpeg|png);base64,/;
-    return base64Pattern.test(str);
-  };
-
-  const profileImageURI = base64Image && isBase64(base64Image) 
-    ? base64Image 
-    : undefined;
+const profileImageURI = useFotoPerfil()
 
   // agrega o actualiza profileImageURI en usuarioDatos
   const completeUsuarioDatos = { ...usuarioDatos, profileImageURI: profileImageURI || Avatar };
-  //console.log("este es el objeto completo con foto en Inicio --> ",completeUsuarioDatos)  el objeto es correcto! 
+  //console.log("este es el objeto completo con foto en Inicio --> ",completeUsuarioDatos)  //el objeto es correcto! 
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -51,7 +32,7 @@ const Inicio = ({ route, navigation }) => {
             <Text style={styles.greeting}>Sin datos del usuario...</Text>
           )}
           <View style={styles.vista}>
-            <Image source={completeUsuarioDatos.profileImageURI ? { uri: completeUsuarioDatos.profileImageURI } : require('../imagenes/avatarX.png')} style={styles.image} />
+            <Image source={completeUsuarioDatos.profileImageURI ? { uri: completeUsuarioDatos.profileImageURI } : Avatar} style={styles.image} />
           </View>
           <View style={styles.buttons}>
               <Pressable
@@ -94,7 +75,7 @@ const Inicio = ({ route, navigation }) => {
                 },
                 styles.button
               ]}
-              onPress={() => navigation.navigate('Datos usuario', { completeUsuarioDatos: completeUsuarioDatos })} // envía el objeto completo completeUsuarioDatos
+              onPress={() => navigation.navigate('Datos usuario', { completeUsuarioDatos: completeUsuarioDatos })} // envía el objeto completo completeUsuarioDatos a TabNavigator.js
             >
               <Text style={styles.buttonText}>Mi Perfil</Text>
             </Pressable>

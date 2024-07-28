@@ -21,16 +21,16 @@ export default function MiPerfil({ route, navigation }) {
       );
   }
 
-  const { foto, nombre, apellido, fecha_nacimiento, genero, telefono, categoria,
+  const { nombre, apellido, fecha_nacimiento, genero, telefono, categoria,
           habilitado, email: usuarioEmail, telefono_emergencia,
           prestador_servicio_emergencia, direccion } = completeUsuarioDatos;
 
   const fechaFormateada = moment(fecha_nacimiento).format('DD/MM/YYYY');
 
-  const handleEditarUsuarioPress = () => {
-    navigation.navigate('Editar datos', { completeUsuarioDatos, navigation }); // envía el objeto completo y navigation a Editar 
-    console.log("2 - este el objeto completo que manda Mi Perfil a editar", completeUsuarioDatos);
-  }
+//   const handleEditarUsuarioPress = () => {
+//     navigation.navigate('Editar datos', { completeUsuarioDatos, navigation }); // envía el objeto completo y navigation a Editar 
+//     console.log("2 - este el objeto completo que manda Mi Perfil a editar", completeUsuarioDatos);
+//   }
 
 if (imageFromDataBase) {
     //console.log("Base64 Image Data:", imageFromDataBase);
@@ -71,13 +71,6 @@ if (imageFromDataBase) {
       <Text style={styles.text}>Email: {usuarioEmail}</Text>
       <Text style={styles.text}>Teléfono de emergencia: {telefono_emergencia}</Text>
       <Text style={styles.text}>Prestador de servicios de emergencia: {prestador_servicio_emergencia}</Text>
-      {/* 
-      tiene que estar este botón acá?? revisar...
-      
-      <Button
-        title='✏️ Editar'
-        onPress={handleEditarUsuarioPress}
-      /> */}
     </View>
   );
 }

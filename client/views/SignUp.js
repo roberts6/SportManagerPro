@@ -9,14 +9,18 @@ import { useGetClubesQuery } from '../../server/servicesFireBase/services.js';
 import { useSignUpMutation } from '../../server/servicesFireBase/credencialesApi';
 import { useNavigation } from '@react-navigation/native';
 import Avatar from '../imagenes/avatarX.png'
+import { useSelector } from 'react-redux';
 
 
 const SignUp = () => {
     const navigation = useNavigation();
     
+    const { localId } = useSelector((state) => state.auth.value);
+
     const initialState = {
         foto: '',
         id: '',
+        localId: '',
         nombre: '',
         apellido: '',
         dni: '',
@@ -187,6 +191,7 @@ const SignUp = () => {
     
             const usuarioComun = {
                 id: generatedId,
+                localId: localId,
                 nombre: dato.nombre,
                 apellido: dato.apellido,
                 edad: calcularEdad(dato.fecha_nacimiento),
@@ -204,7 +209,7 @@ const SignUp = () => {
                 habilitado: false,
                 fecha_registro: fechaYhora(),
             };
-    
+            
             if (dato.rol === 'Jugador') {
                 const jugador = {
                     ...usuarioComun,
