@@ -4,7 +4,7 @@ import { bd_url } from '../FireBaseDB.js';
 export const ApiJugadores = createApi({
     reducerPath: 'ApiJugadores',
     baseQuery: fetchBaseQuery({ baseUrl: bd_url }),
-    tagTypes: ['profileImageGet'],
+    tagTypes: ['profileImageGet', 'direccionGet'],
     endpoints: (builder) => ({
         getJugadores: builder.query({
             query: () => `Jugadores.json` // Endpoint para la colección de jugadores
@@ -18,27 +18,12 @@ export const ApiJugadores = createApi({
         getDelegados: builder.query({
             query: () => `Delegados.json` // Endpoint para la colección de Delegados
         }),
-        getJugadoresByClub: builder.query({
-            query: (clubId) => `Jugadores.json?orderBy="clubId"&equalTo="${clubId}"`
-        }),
-        getJugadorById: builder.query({
-            query: (jugadorId) => `Jugadores.json?orderBy="id"&equalTo="${jugadorId}"`
-        }),
         getJugadorByEmail: builder.query({
             query: (email) => `Jugadores.json?orderBy="email"&equalTo="${email}"`
         }),getEntrenadorByEmail: builder.query({
             query: (email) => `Entrenadores.json?orderBy="email"&equalTo="${email}"`
         }),getDelegadoByEmail: builder.query({
             query: (email) => `Delegados.json?orderBy="email"&equalTo="${email}"`
-        }),
-        getJugadorById: builder.query({
-            query: (id) => `Jugadores.json?orderBy="id"&equalTo="${id}"`
-        }),
-        getEntrenadorById: builder.query({
-            query: (id) => `Entrenadores.json?orderBy="id"&equalTo="${id}"`
-        }),
-        getDelegadoById: builder.query({
-            query: (id) => `Delegados.json?orderBy="id"&equalTo="${id}"`
         }),
         // foto perfil 
         getFotoPerfil: builder.query({
@@ -55,6 +40,25 @@ export const ApiJugadores = createApi({
                 }
             }),
             invalidatesTags: ['profileImageGet'] // invalida que la búsqueda de la imagen sea desde el catche y lo hace desde la BD
+        }),
+        // dirección 
+        getDireccion: builder.query({
+            query: (localId) => `direcciones/${localId}.json`,
+            providesTags: ['direccionGet']
+        }),
+        // agrega o cambiar la dirección
+        postDireccion: builder.mutation({
+            query:({location, localId}) => ({
+                url: `direcciones/${localId}.json`,
+                method: 'PUT',
+                body: {
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    direccion: location.direccion,
+                    modificado: location.modificado
+                }
+            }),
+            invalidatesTags: ['direccionGet'] // invalida que la búsqueda de la dirección sea desde el catche y lo hace desde la BD
         }),
                 postJugador: builder.mutation({
             query: (jugador) => ({
@@ -106,10 +110,6 @@ export const {
     useGetClubesQuery,
     useGetDelegadosQuery,
     useGetEntrenadoresQuery,
-    useGetJugadorByIdQuery,
-    useGetJugadoresByClubQuery,
-    useGetDelegadoByIdQuery,
-    useGetEntrenadorByIdQuery,
     useGetJugadorByEmailQuery,
     useGetDelegadoByEmailQuery,
     useGetEntrenadorByEmailQuery,
@@ -120,5 +120,7 @@ export const {
     usePutDelegadoIdMutation,
     usePutEntrenadorIdMutation,
     useGetFotoPerfilQuery,
-    usePostFotoPerfilMutation
+    usePostFotoPerfilMutation,
+    useGetDireccionQuery,
+    usePostDireccionMutation
 } = ApiJugadores;

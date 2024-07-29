@@ -4,18 +4,32 @@ import * as Location from 'expo-location';
 import MapPreview from '../../views/MapPreview';
 import { Colores } from './colores';
 import { googleApiKey } from '../../../GoogleApiKey';
+import { usePostDireccionMutation } from '../../../server/servicesFireBase/services';
+import { useSelector } from 'react-redux';
 
 const LocationSelector = ({navigation}) => {
         const [location, setLocation] = useState(null);
         const [direccion, setDireccion] = useState('')
         const [error, setError] = useState('');
+        const [triggerPostDireccion, result] = usePostDireccionMutation()
+        const {localId} = useSelector((state) => state.auth.value )
+
+        const fecha = new Date()
 
         const GuardarDireccion = () => {
+            triggerPostDireccion({
+                location:{
+                latitude: location.latitude,
+                longitude: location.longitude,
+                direccion,
+                modificado: `${fecha.getDate()}/${fecha.getMonth()}/${fecha.getFullYear()} - ${fecha.getHours()}: ${fecha.getMinutes()} `
+            },
+            localId: localId
+        })
             console.log("dirección guardada")
         }
     
         useEffect(() => {
-        
         // esta función se va a crear y cuando termina se auto ejecuta. Se llama IIFE
         (async () => {
             try {

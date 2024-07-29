@@ -5,21 +5,28 @@ import { Colores } from '../features/utilidades/colores';
 import VistaActual from '../features/utilidades/VistaActual';
 import Avatar from '../imagenes/avatarX.png'; 
 import useFotoPerfil from '../features/utilidades/traeFotoPerfilDesdeDB';
+import { useSelector } from 'react-redux';
+import { useGetDireccionQuery } from '../../server/servicesFireBase/services';
 
 const Inicio = ({ route, navigation }) => {
   const { usuario } = route.params || {};
   const email = usuario ? usuario.email : null;
-  const usuariolocalId = usuario ? usuario.localId : null;
+  //const usuariolocalId = usuario ? usuario.localId : null;
   const usuarioDatos = useBusquedaXmail(email);
+  const {localId} = useSelector((state) => state.auth.value )
+  const {direccion: direccionGoogleMaps} = useGetDireccionQuery(localId)
 
-  console.log("localId en Inicio",usuariolocalId)
+  // console.log("localId en Inicio",usuariolocalId)
+  console.log("localId en Inicio",localId)
+
+  const direccionDefinitiva = direccionGoogleMaps? direccionGoogleMaps : usuarioDatos?.direccion
 
   VistaActual();
 
 const profileImageURI = useFotoPerfil()
 
   // agrega o actualiza profileImageURI en usuarioDatos
-  const completeUsuarioDatos = { ...usuarioDatos, profileImageURI: profileImageURI || Avatar };
+  const completeUsuarioDatos = { ...usuarioDatos, direccionDefinitiva, profileImageURI: profileImageURI || Avatar };
   //console.log("este es el objeto completo con foto en Inicio --> ",completeUsuarioDatos)  //el objeto es correcto! 
 
   return (
