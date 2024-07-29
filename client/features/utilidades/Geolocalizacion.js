@@ -21,12 +21,13 @@ const LocationSelector = ({navigation}) => {
                 location:{
                 latitude: location.latitude,
                 longitude: location.longitude,
-                direccion,
+                direccion: direccion,
                 modificado: `${fecha.getDate()}/${fecha.getMonth()}/${fecha.getFullYear()} - ${fecha.getHours()}: ${fecha.getMinutes()} `
             },
             localId: localId
         })
             console.log("dirección guardada")
+            navigation.goBack() 
         }
     
         useEffect(() => {
@@ -55,12 +56,13 @@ const LocationSelector = ({navigation}) => {
         (async() => {
             try {
                 if (location.latitude) {
-                    const url_reverse_geocode = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${googleApiKey}`
+                    const url_reverse_geocode = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${googleApiKey.mapStatic}`
                     const response = await fetch(url_reverse_geocode);
                     const data = await response.json()
                     console.dir("geocode",data) // muestra el log en formato de objeto
                     if (data.status === 'OK' && data.results.length > 0) {
-                        setDireccion(data.results[0].formatted_address); 
+                        setDireccion(data.results[0].formatted_address); // devuelve longitud y latitud en un formato legile de dirección
+                        //console.log("direccion legible",data.results[0].formatted_address)
                     } else {
                         console.log("Geocoding error:", data.error_message);
                     }
@@ -79,7 +81,7 @@ const LocationSelector = ({navigation}) => {
                 </View>
             ) : location ? (
                 <View>
-                    <Text>Latitude: {location.latitude}, Longitude: {location.longitude}</Text>
+                    <Text>Dirección: {direccion}</Text>
                     <MapPreview location={location} />
                     <Pressable
               style={({ pressed }) => [
