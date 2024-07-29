@@ -340,7 +340,7 @@ profileImageURI? (
                 </View>
 
                 <View style={styles.buttonContainer}>
-                    <Pressable onPress={guardarCambiosUsuario} style={styles.button}>
+                    <Pressable onPress={guardarCambiosUsuario} style={styles.buttonConfirm}>
                         <Text style={styles.buttonText}>Guardar Cambios</Text>
                     </Pressable>
                 </View>
@@ -387,7 +387,13 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     button: {
-        backgroundColor: Colores.verde2,
+        backgroundColor: Colores.verde1,
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    buttonConfirm: {
+        backgroundColor: Colores.verdeOoscuro,
         padding: 15,
         borderRadius: 5,
         alignItems: 'center'

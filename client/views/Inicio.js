@@ -11,15 +11,16 @@ import { useGetDireccionQuery } from '../../server/servicesFireBase/services';
 const Inicio = ({ route, navigation }) => {
   const { usuario } = route.params || {};
   const email = usuario ? usuario.email : null;
-  //const usuariolocalId = usuario ? usuario.localId : null;
+  const usuariolocalId = usuario ? usuario.localId : null;
   const usuarioDatos = useBusquedaXmail(email);
-  const {localId} = useSelector((state) => state.auth.value )
-  const {direccion: direccionGoogleMaps} = useGetDireccionQuery(localId)
 
-  // console.log("localId en Inicio",usuariolocalId)
-  console.log("localId en Inicio",localId)
+  const {direccion: direccionGoogleMaps} = useGetDireccionQuery({localId: usuariolocalId})
+
+  console.log("localId en Inicio",usuariolocalId)
+  //console.log("localId en Inicio",localId)
 
   const direccionDefinitiva = direccionGoogleMaps? direccionGoogleMaps : usuarioDatos?.direccion
+  // si no hay información de google maps trae la cargada a mano en el signUp
 
   VistaActual();
 

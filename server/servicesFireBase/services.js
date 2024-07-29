@@ -82,22 +82,22 @@ export const ApiJugadores = createApi({
             }),
         }),
         putJugadorId: builder.mutation({
-            query: (datosUsuario) => ({
-                url: `Jugadores.json?orderBy="id"&equalTo="${datosUsuario.id}`,
+            query: ({datosUsuario, localId}) => ({
+                url: `Jugadores.json?orderBy="id"&equalTo="${localId}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
         }),
         putEntrenadorId: builder.mutation({
-            query: (datosUsuario) => ({
-                url: `Entrenadores.json?orderBy="id"&equalTo="${datosUsuario.id}`,
+            query: ({datosUsuario, localId}) => ({
+                url: `Entrenadores.json?orderBy="id"&equalTo="${localId}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
         }),
         putDelegadoId: builder.mutation({
-            query: (datosUsuario) => ({
-                url: `Delegados.json?orderBy="id"&equalTo="${datosUsuario.id}`,
+            query: ({datosUsuario, localId}) => ({
+                url: `Delegados.json?orderBy="id"&equalTo="${localId}`,
                 method: 'PUT',
                 body: datosUsuario
             }),
