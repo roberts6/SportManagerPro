@@ -3,14 +3,14 @@ import { View, StyleSheet, Text, Pressable } from 'react-native';
 import * as Location from 'expo-location';
 import MapPreview from '../../views/MapPreview';
 import { Colores } from './colores';
+import { googleApiKey } from '../../../GoogleApiKey';
 
-const LocationSelector = () => {
+const LocationSelector = ({navigation}) => {
         const [location, setLocation] = useState(null);
         const [direccion, setDireccion] = useState('')
         const [error, setError] = useState('');
 
         const GuardarDireccion = () => {
-            setDireccion(location)
             console.log("dirección guardada")
         }
     
@@ -37,6 +37,26 @@ const LocationSelector = () => {
         })();
       }, []);
 
+      useEffect(() => {
+        (async() => {
+            try {
+                if (location.latitude) {
+                    const url_reverse_geocode = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${googleApiKey}`
+                    const response = await fetch(url_reverse_geocode);
+                    const data = await response.json()
+                    console.dir("geocode",data) // muestra el log en formato de objeto
+                    if (data.status === 'OK' && data.results.length > 0) {
+                        setDireccion(data.results[0].formatted_address); 
+                    } else {
+                        console.log("Geocoding error:", data.error_message);
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+          }, [location]) // cuando se actualiza location vuelve a ejecutarse el useEffect
+
     return (
         <View style={styles.container}>
             {error ? (
@@ -54,7 +74,7 @@ const LocationSelector = () => {
                 },
                 styles.button
               ]}
-              onPress={GuardarDireccion} // envía el objeto completo completeUsuarioDatos a TabNavigator.js
+              onPress={GuardarDireccion}
             >
               <Text style={styles.buttonText}>Guardar dirección 📍</Text>
             </Pressable>

@@ -40,11 +40,12 @@ export const ApiJugadores = createApi({
         getDelegadoById: builder.query({
             query: (id) => `Delegados.json?orderBy="id"&equalTo="${id}"`
         }),
-        // foto perfil general
+        // foto perfil 
         getFotoPerfil: builder.query({
             query: (localId) => `profileImages/${localId}.json`,
             providesTags: ['profileImageGet']
         }),
+        // agrega o cambia la foto de perfil 
         postFotoPerfil: builder.mutation({
             query:({fotoPerfil, localId}) => ({
                 url: `profileImages/${localId}.json`,
@@ -55,34 +56,7 @@ export const ApiJugadores = createApi({
             }),
             invalidatesTags: ['profileImageGet'] // invalida que la búsqueda de la imagen sea desde el catche y lo hace desde la BD
         }),
-        // foto perfil delegado
-        getFotoPerfilDelegadoById: builder.query({
-            query: (id) => `Delegados.json?orderBy="id"&equalTo="${id}"`
-        }),
-        postFotoPerfilDelegado: builder.mutation({
-            query:() => {
-
-            }
-        }),
-        // foto perfil Jugadores
-        getFotoPerfilJugadoresById: builder.query({
-            query: (id) => `Jugadores.json?orderBy="id"&equalTo="${id}"`
-        }),
-        postFotoPerfilDelegado: builder.mutation({
-            query:() => {
-
-            }
-        }),
-        // foto perfil Entrenadores
-        getFotoPerfilEntrenadoresById: builder.query({
-            query: (id) => `Entrenadores.json?orderBy="id"&equalTo="${id}"`
-        }),
-        postFotoPerfilDelegado: builder.mutation({
-            query:() => {
-
-            }
-        }),
-        postJugador: builder.mutation({
+                postJugador: builder.mutation({
             query: (jugador) => ({
                 url: 'Jugadores.json',
                 method: 'POST',
