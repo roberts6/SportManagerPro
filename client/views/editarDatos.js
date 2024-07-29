@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform, Image } from 'react-native';
 import { usePutJugadorIdMutation, usePutDelegadoIdMutation, usePutEntrenadorIdMutation } from '../../server/servicesFireBase/services';
-import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
 import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Colores } from '../features/utilidades/colores';
@@ -13,18 +12,11 @@ const EditarDatos = ({route, navigation}) => {
 
     const { data: dataClubes } = useGetClubesQuery();
 
-    const usuarioEmail = useBusquedaXmail(completeUsuarioDatos.email);
-    //const usuarioId = useBusquedaXId(id)
-    const [datosUsuario, setDatosUsuario] = useState(null);
+    const [datosUsuario, setDatosUsuario] = useState(completeUsuarioDatos);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [fecha, setFecha] = useState(new Date());
 
-    useEffect(() => {
-        if (usuarioEmail) {
-            setDatosUsuario(usuarioEmail);
-        }
-    }, [usuarioEmail]);
 
     const [triggerPutJugador, { isLoadingJugador, errorJugador }] = usePutJugadorIdMutation();
     const [triggerPutDelegado, { isLoadingDelegado, errorDelegado }] = usePutDelegadoIdMutation();
@@ -67,7 +59,7 @@ const EditarDatos = ({route, navigation}) => {
     };
 
     const guardarCambiosUsuario = async () => {
-        const { nombre, apellido, profileImageURI, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = completeUsuarioDatos;
+        const { nombre, apellido, profileImageURI, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = datosUsuario;
 
     if (!nombre) {
         alert('Por favor ingresá tu nombre.');
@@ -141,7 +133,7 @@ if (!fecha_nacimiento) {
     }
         try {
             if (datosUsuario.rol === "Jugador") {
-                await triggerPutJugador(datosUsuario, datosUsuario.id);
+                await triggerPutJugador(datosUsuario, localId);
                 console.log("esto se envía con modificaciones",datosUsuario)
                 alert('Datos editados exitosamente');    
             } else if (datosUsuario.rol === "Delegado") {
@@ -167,7 +159,7 @@ if (!fecha_nacimiento) {
         );
     }
 
-    const { nombre, apellido, dni, fecha_nacimiento, profileImageURI, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = completeUsuarioDatos;
+    const { nombre, apellido, dni, fecha_nacimiento, profileImageURI, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = datosUsuario;
 
     return (
         <ScrollView style={styles.scrollView}>
@@ -418,6 +410,5 @@ const styles = StyleSheet.create({
 });
 
 export default EditarDatos;
-
 
 

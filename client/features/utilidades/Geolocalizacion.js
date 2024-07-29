@@ -80,8 +80,8 @@ const LocationSelector = ({navigation}) => {
                     <Text style={styles.errorText}>{error}</Text>
                 </View>
             ) : location ? (
-                <View>
-                    <Text>Dirección: {direccion}</Text>
+                <View style={styles.locationContainer}>
+                    <Text style={styles.text}>Dirección: {direccion}</Text>
                     <MapPreview location={location} />
                     <Pressable
               style={({ pressed }) => [
@@ -107,9 +107,11 @@ const LocationSelector = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: 50,
+        textAlign: 'center',
+    },
+    locationContainer:{
         alignItems: 'center',
-        textAlign:'center',
-        marginVertical: 45
     },
     errorText: {
         color: 'red',
@@ -126,6 +128,10 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 16,
       },
+      text:{
+        textAlign:'center',
+        fontWeight:'900'
+      }
 });
 
 export default LocationSelector;
