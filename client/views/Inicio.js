@@ -89,7 +89,7 @@ const profileImageURI = useFotoPerfil()
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: Colores.verdeClaro,
+    //backgroundColor: Colores.verdeClaro,
   },
   container: {
     flex: 1,

@@ -11,6 +11,7 @@ import AuthStackNavigator from './AuthStackNavigation';
 import MiPerfil from '../views/MiPerfil';
 import EditarDatos from '../views/editarDatos';
 import Camara from '../features/utilidades/Camara.js'
+import LocationSelector from '../features/utilidades/Geolocalizacion.js';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Información Jugador" component={DetalleJugador} />
             <Stack.Screen name="Estadísticas" component={Estadisticas} />
             <Stack.Screen name="Camara" component={Camara} />
+            <Stack.Screen name="Location" component={LocationSelector} />
         </Stack.Navigator>
     );
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Button, Platform, Image } from 'react-native';
 import { usePutJugadorIdMutation, usePutDelegadoIdMutation, usePutEntrenadorIdMutation } from '../../server/servicesFireBase/services';
 import { useBusquedaXmail } from '../features/utilidades/busquedaXmail';
-import {useBusquedaXId} from '../features/utilidades/busquedaXid'
 import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Colores } from '../features/utilidades/colores';
@@ -277,6 +276,17 @@ profileImageURI? (
                         style={styles.placeholder}
                     />
                 </View>
+                <Pressable
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.6 : 1
+                },
+                styles.button
+              ]}
+              onPress={() => navigation.navigate('Location', {completeUsuarioDatos})}
+            >
+              <Text style={styles.buttonText}>Geolocalización</Text>
+            </Pressable>
                 <View style={styles.inputContainer}>
                     <Text>DNI</Text>
                     <TextInput
