@@ -5,12 +5,15 @@ import { useGetClubesQuery } from '../../server/servicesFireBase/services';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Colores } from '../features/utilidades/colores';
 import Avatar from '../imagenes/avatarX.png'
+import { useSelector } from 'react-redux';
 
 const EditarDatos = ({route, navigation}) => {
     const { completeUsuarioDatos } = route.params;
-    console.log("3 - objeto recibido en editar", completeUsuarioDatos)
+    //console.log("3 - objeto recibido en editar", completeUsuarioDatos)
+    
 
     const { data: dataClubes } = useGetClubesQuery();
+    const {localId} = useSelector((state) => state.auth.value)
 
     const [datosUsuario, setDatosUsuario] = useState(completeUsuarioDatos);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
@@ -59,7 +62,7 @@ const EditarDatos = ({route, navigation}) => {
     };
 
     const guardarCambiosUsuario = async () => {
-        const { nombre, apellido, profileImageURI, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia } = datosUsuario;
+        const { nombre, apellido, profileImageURI, dni, fecha_nacimiento, genero, telefono, direccion, email, password, confirmacionPassword, club, telefono_emergencia, prestador_servicio_emergencia, id } = datosUsuario;
 
     if (!nombre) {
         alert('Por favor ingresá tu nombre.');
@@ -133,16 +136,16 @@ if (!fecha_nacimiento) {
     }
         try {
             if (datosUsuario.rol === "Jugador") {
-                await triggerPutJugador(datosUsuario, localId);
-                console.log("esto se envía con modificaciones",datosUsuario)
+                await triggerPutJugador({ datosUsuario, localId });
+                console.log("esto se envía con modificaciones",datosUsuario, 'id enviado al service:', localId)
                 alert('Datos editados exitosamente');    
             } else if (datosUsuario.rol === "Delegado") {
-                await triggerPutDelegado(datosUsuario, datosUsuario.id);
-            console.log("esto se envía con modificaciones",datosUsuario)
+                //await triggerPutDelegado(datosUsuario, id);
+            console.log("esto se envía con modificaciones",datosUsuario, 'id enviado al service:', id)
             alert('Datos editados exitosamente');
             }else {
-                await triggerPutEntrenador(datosUsuario, datosUsuario.id);
-            console.log("esto se envía con modificaciones",datosUsuario)
+                //await triggerPutEntrenador(datosUsuario, id);
+            console.log("esto se envía con modificaciones",datosUsuario, 'id enviado al service:', id)
             alert('Datos editados exitosamente');
             }
             

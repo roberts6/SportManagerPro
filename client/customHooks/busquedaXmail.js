@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGetJugadorByEmailQuery, useGetEntrenadorByEmailQuery, useGetDelegadoByEmailQuery } from '../../../server/servicesFireBase/services.js';
+import { useGetJugadorByEmailQuery, useGetEntrenadorByEmailQuery, useGetDelegadoByEmailQuery } from '../../server/servicesFireBase/services.js';
 
 export const useBusquedaXmail = (email) => {
     const { data: JugadorEmail, isSuccess: JugadorEmailSuccess } = useGetJugadorByEmailQuery(email);

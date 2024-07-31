@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, ScrollView, StyleSheet, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { calcularCategoria } from '../features/utilidades/calcularCategoriaHandball.js';
-import { calcularEdad } from '../features/utilidades/calcularEdad.js';
+import { calcularCategoria } from '../customHooks/calcularCategoriaHandball.js';
+import { calcularEdad } from '../customHooks/calcularEdad.js';
 import { usePostJugadorMutation } from '../../server/servicesFireBase/services.js';
 import { useGetClubesQuery } from '../../server/servicesFireBase/services.js';
 

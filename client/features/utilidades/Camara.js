@@ -5,8 +5,8 @@ import { Colores } from './colores';
 import * as ImagePicker from 'expo-image-picker';
 import { setCameraImage } from '../User/UserSlice'; // viene de UserSlice.js dentro de User
 import { useDispatch, useSelector } from 'react-redux'; // permite ejecutar el dispach para la función en el slice
-import { useGetFotoPerfilQuery, usePostFotoPerfilMutation } from '../../../server/servicesFireBase/services';
-import VistaActual from './VistaActual';
+import { usePostFotoPerfilMutation } from '../../../server/servicesFireBase/services';
+
 
 const SeleccionarImagen = ({ route,navigation }) => {
     const { completeUsuarioDatos } = route.params;

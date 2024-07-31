@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGetJugadorIdQuery, useGetEntrenadorIdQuery, useGetDelegadoIdQuery } from '../../../server/servicesFireBase/services.js';
+import { useGetJugadorIdQuery, useGetEntrenadorIdQuery, useGetDelegadoIdQuery } from '../../server/servicesFireBase/services.js';
 
 export const useBusquedaXid = (id) => {
     const { data: JugadorId, isSuccess: JugadorIdSuccess } = useGetJugadorIdQuery(id);

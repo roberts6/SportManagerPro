@@ -21,6 +21,7 @@ const DetalleJugador = ({ route }) => {
     }
 
     console.log("datos en jugador -->", jugador)
+    const {profileImageURI} = jugador;
 
     const handleEstadisticasPress = () => {
         navigation.navigate('Estadísticas', { jugador });
@@ -37,7 +38,7 @@ const DetalleJugador = ({ route }) => {
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{jugador.nombre} {jugador.apellido}</Text>
             {/* <Image source={require('../imagenes/avatarX.png')} style={styles.image} /> */}
             <Image 
-                source={jugador.profileImageUri ? { uri: jugador.profileImageUri } : Avatar} // Ensure property name consistency
+                source={profileImageURI ? { uri: profileImageURI } : Avatar} // Ensure property name consistency
                 style={styles.image} 
             />
             <Text style={styles.text}>{jugador.club}</Text>

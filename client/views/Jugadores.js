@@ -6,7 +6,10 @@ import FiltroClub from '../filtros/filtroClub.js';
 import { useNavigation } from '@react-navigation/native';
 import { useGetJugadoresQuery } from '../../server/servicesFireBase/services.js';
 import Avatar from '../imagenes/avatarX.png'; // imagen por default si no hay profileImageURI
-import useFotoPerfilJugadores from '../features/utilidades/fotoPerfilJugadores.js';
+import useFotoPerfilJugadores from '../customHooks/fotoPerfilJugadores.js';
+import { setUsuarios } from '../features/User/SliceConKey.js';
+import { useDispatch } from 'react-redux';
+import useJugadoresArray from '../customHooks/JugadoresArray.js';
 
 const Jugadores = () => {
     const [filteredNombre, setFilteredNombre] = useState([]);
@@ -15,27 +18,26 @@ const Jugadores = () => {
     const [searchClub, setSearchClub] = useState('');
     const navigation = useNavigation();
 
+    const dispatch = useDispatch()
+
     const { data, error, isLoading } = useGetJugadoresQuery();
     const profileImageURI = useFotoPerfilJugadores(); 
+    //console.log("esto trae data en JUGADORES",data)
 
-    // transforma el objeto data en un array
-    const jugadoresArray = useMemo(() => {
-        return data && typeof data === 'object' ? Object.values(data) : [];
-    }, [data]);
+    const jugadoresArray = useJugadoresArray(data); // custom Hook que convierte el objeto data en un array
 
     // ahora que es un array me permite hacer un .map que agrega profileImageURI a cada item "jugador" dentro
     const completeUsuarioDatos = useMemo(() => {
         return jugadoresArray.map((jugador) => {
             
-            console.log("Jugador localId: ", jugador.localId); // trae el localId correctamente y coincide con el localId de la foto que está en profileImages de mi firebase
-             //const profileImageURI = useFotoPerfilJugadores(jugador.localId); // me da un error de re renderizado
-    
+            console.log("Jugador KEY: ", jugador.key) // trae la key ok
+            //console.log("Jugador localId: ", jugador.localId); // trae el localId correctamente y coincide con el localId de la foto que está en profileImages de mi firebase
             return {
                 ...jugador,
                 profileImageURI: profileImageURI? profileImageURI : Avatar, 
             };
         });
-    }, [jugadoresArray]);
+    }, [jugadoresArray, profileImageURI]);
 
 
     useEffect(() => {

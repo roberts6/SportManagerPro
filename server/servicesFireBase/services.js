@@ -82,7 +82,7 @@ export const ApiJugadores = createApi({
             }),
         }),
         putJugadorId: builder.mutation({
-            query: (datosUsuario, localId) => ({
+            query: ({datosUsuario, localId}) => ({
                 url: `Jugadores/${localId}.json`,
                 method: 'PUT',
                 body: datosUsuario

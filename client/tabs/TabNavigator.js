@@ -8,6 +8,7 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({ route }) => {
     const { completeUsuarioDatos } = route.params;
+    console.log("datos en el tabNavigator",completeUsuarioDatos)
     return (
         <Tab.Navigator 
             screenOptions={{

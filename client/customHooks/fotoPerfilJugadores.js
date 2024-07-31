@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useGetFotoPerfilQuery } from "../../../server/servicesFireBase/services";
+import { useGetFotoPerfilQuery } from "../../server/servicesFireBase/services";
 
-const useFotoPerfil = () => {
-  const { localId } = useSelector((state) => state.auth.value);
+const useFotoPerfilJugadores = (localId) => {
+  
     const { data: imageFromDataBase } = useGetFotoPerfilQuery(localId);
 
     const base64Image = useMemo(() => {
@@ -25,4 +25,4 @@ const useFotoPerfil = () => {
     return profileImageURI;
 };
 
-export default useFotoPerfil;
+export default useFotoPerfilJugadores;

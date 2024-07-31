@@ -9,7 +9,7 @@ import { useGetFotoPerfilQuery } from '../../server/servicesFireBase/services';
 
 export default function MiPerfil({ route, navigation }) {
   const { completeUsuarioDatos } = route.params;
-  const {imageCamera, localId} = useSelector((state) => state.auth.value)
+  const {localId} = useSelector((state) => state.auth.value)
   const {data: imageFromDataBase} = useGetFotoPerfilQuery(localId)
   console.log("Mi perfil localId", localId)
 
@@ -31,6 +31,8 @@ export default function MiPerfil({ route, navigation }) {
 //     navigation.navigate('Editar datos', { completeUsuarioDatos, navigation }); // envía el objeto completo y navigation a Editar 
 //     console.log("2 - este el objeto completo que manda Mi Perfil a editar", completeUsuarioDatos);
 //   }
+
+
 
 if (imageFromDataBase) {
     //console.log("Base64 Image Data:", imageFromDataBase);
