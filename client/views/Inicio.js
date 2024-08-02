@@ -9,7 +9,7 @@ const Inicio = ({ route, navigation }) => {
   const { usuario, key } = route.params || {};
   const email = usuario ? usuario.email : null;
   
-  const completeUsuarioDatos = useUsuarioCompleto(email) // custom Hook
+  const completeUsuarioDatos = useUsuarioCompleto(email) // custom Hook que agrega dirección y foto 
   //console.log("qué trae completeUsuarioDatos en INICIO", completeUsuarioDatos)
 
   return (
