@@ -5,12 +5,48 @@ import moment from 'moment';
 import SeleccionarImagen from '../features/utilidades/Camara';
 import { Colores } from '../features/utilidades/colores';
 import Avatar from '../imagenes/avatarX.png'
+import useFotoPerfil from '../customHooks/traeFotoPerfilDesdeDB';
+import { useGetFotoPerfilQuery } from '../../server/servicesFireBase/services';
 
 const DetalleJugador = ({ route }) => {
     const { jugador } = route.params; 
     const navigation = useNavigation();
 
-    //const Imagen = SeleccionarImagen()
+    const {localId} = jugador;
+    console.log("localId que trae jugador",localId) // trae correctamente el localId que tiene almacenado
+    
+    const fotoPerfil = useGetFotoPerfilQuery(localId)
+    //console.log("foto que trae jugador",fotoPerfil.currentData) 
+
+    
+    // tampoco funciona. Revisar!!!
+    const profileImage = ( fotoPerfil ) => {
+  
+        let imageSource = Avatar; 
+        
+        
+        if (fotoPerfil && fotoPerfil.currentData) {
+          
+          let fotoData;
+          try {
+            fotoData = JSON.parse(fotoPerfil.currentData);
+          } catch (error) {
+            console.error("Error parsing json: ", error);
+          }
+          
+
+          if (fotoData && fotoData.Image) {
+            imageSource = { uri: fotoData.Image };
+          }
+        }
+      
+        return (
+          <Image
+            source={imageSource}
+            style={styles.image}
+          />
+        );
+      };
 
     if (!jugador) {
         return (
@@ -20,8 +56,9 @@ const DetalleJugador = ({ route }) => {
         );
     }
 
-    console.log("datos en jugador -->", jugador)
-    const {profileImageURI} = jugador;
+    //console.log("datos en jugador -->", jugador) // recibe ok la info desde "Jugadores.js" incluida la key
+    //const {profileImageURI, key} = jugador;
+    //console.log("foto del detalle de jugador ",key, profileImageURI)
 
     const handleEstadisticasPress = () => {
         navigation.navigate('Estadísticas', { jugador });
@@ -36,11 +73,10 @@ const DetalleJugador = ({ route }) => {
     return (
         <View style={styles.container}>
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{jugador.nombre} {jugador.apellido}</Text>
-            {/* <Image source={require('../imagenes/avatarX.png')} style={styles.image} /> */}
-            <Image 
-                source={profileImageURI ? { uri: profileImageURI } : Avatar} // Ensure property name consistency
-                style={styles.image} 
-            />
+            {/* <Image source={jugador.profileImageURI ? { uri: jugador.profileImageURI } : Avatar} style={styles.image} />
+             */}
+             <Image source={fotoPerfil.currentData ? { uri:fotoPerfil.currentData } : Avatar} style={styles.image} />
+            {/* {profileImage()} */}
             <Text style={styles.text}>{jugador.club}</Text>
             <Text style={styles.text}>Fecha de nacimiento: {fechaFormateada}</Text>
             <Text style={styles.text}>Edad: {jugador.edad}</Text>

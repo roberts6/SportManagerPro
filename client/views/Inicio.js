@@ -1,39 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable, SafeAreaView } from 'react-native';
-import { useBusquedaXmail } from '../customHooks/busquedaXmail.js';
 import { Colores } from '../features/utilidades/colores';
 import Avatar from '../imagenes/avatarX.png'; 
-import useFotoPerfil from '../customHooks/traeFotoPerfilDesdeDB.js';
-import { useSelector } from 'react-redux';
-import { useGetDireccionQuery } from '../../server/servicesFireBase/services';
+
+import useUsuarioCompleto from '../customHooks/UsuarioCompleto.js';
 
 const Inicio = ({ route, navigation }) => {
   const { usuario, key } = route.params || {};
   const email = usuario ? usuario.email : null;
-  const usuarioDatos = useBusquedaXmail(email); 
-  const usuarioConKey = useSelector((state) => state.usuarios.usuarios) 
-
-  // console.log("INICIO",usuarioConKey)
-
-  // console.log("KEY en INICIO",key)
-
-  const {localId} = useSelector((state) => state.auth.value)
-
-  const { data: direccionData } = useGetDireccionQuery(localId);
-
-  // console.log("Local ID en Inicio:", localId);  // OK
-  // console.log("Direccion Data:", direccionData.direccion); // OK
-
-  const direccionDefinitiva = direccionData ? direccionData.direccion : usuarioDatos?.direccion || ''; 
-
-  const profileImageURI = useFotoPerfil();
-
-  // le agrega a los datos de la BD foto y dirección si es que hay en firebase
-  const completeUsuarioDatos = { 
-    ...usuarioDatos, 
-    direccion: direccionDefinitiva, 
-    profileImageURI: profileImageURI || Avatar 
-  };
+  
+  const completeUsuarioDatos = useUsuarioCompleto(email) // custom Hook
+  //console.log("qué trae completeUsuarioDatos en INICIO", completeUsuarioDatos)
 
   return (
     <SafeAreaView style={styles.safeContainer}>

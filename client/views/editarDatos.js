@@ -10,10 +10,11 @@ import { useSelector } from 'react-redux';
 const EditarDatos = ({route, navigation}) => {
     const { completeUsuarioDatos } = route.params;
     //console.log("3 - objeto recibido en editar", completeUsuarioDatos)
-    
+    const {localId: localDelUsuario} = completeUsuarioDatos;
 
     const { data: dataClubes } = useGetClubesQuery();
     const {localId} = useSelector((state) => state.auth.value)
+    console.log("localId",localId,"localDelUsuario", localDelUsuario)
 
     const [datosUsuario, setDatosUsuario] = useState(completeUsuarioDatos);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);

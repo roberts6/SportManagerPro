@@ -23,7 +23,7 @@ export default function MiPerfil({ route, navigation }) {
 
   const { nombre, apellido, fecha_nacimiento, genero, telefono, categoria,
           habilitado, email: usuarioEmail, telefono_emergencia,
-          prestador_servicio_emergencia, direccion } = completeUsuarioDatos;
+          prestador_servicio_emergencia, direccion, profileImageURI } = completeUsuarioDatos;
 
   const fechaFormateada = moment(fecha_nacimiento).format('DD/MM/YYYY');
 
@@ -31,30 +31,6 @@ export default function MiPerfil({ route, navigation }) {
 //     navigation.navigate('Editar datos', { completeUsuarioDatos, navigation }); // envía el objeto completo y navigation a Editar 
 //     console.log("2 - este el objeto completo que manda Mi Perfil a editar", completeUsuarioDatos);
 //   }
-
-
-
-if (imageFromDataBase) {
-    //console.log("Base64 Image Data:", imageFromDataBase);
-    console.log("Base64 Image Data ok");
-  } else {
-    console.log("No hay data de imagen desde database");
-  }
-
-  // Extrae la cadena de texto de Base64 en imageFromDataBase.Image
-  const base64Image = imageFromDataBase?.Image;
-
-  const isBase64 = (str) => {
-    if (typeof str !== 'string') {
-      return false;
-    }
-    const base64Pattern = /^data:image\/(jpeg|png);base64,/;
-    return base64Pattern.test(str);
-  };
-
-  const profileImageURI = base64Image && isBase64(base64Image) 
-    ? base64Image
-    : undefined;
 
   return (
     <View style={styles.container}>

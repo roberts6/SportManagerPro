@@ -15,7 +15,7 @@ const useJugadoresArray = (data) => {
    
     useEffect(() => {
         if (jugadoresArray.length > 0) {
-            console.log("Jugadores Array with Keys:", jugadoresArray);
+            //console.log("Jugadores Array with Keys:", jugadoresArray);
             dispatch(setUsuarios(jugadoresArray)); // Store jugadores in Redux
         }
     }, [jugadoresArray, dispatch]);
