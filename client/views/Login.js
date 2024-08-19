@@ -3,7 +3,7 @@ import { View, TextInput, ScrollView, StyleSheet, Text, Pressable, Alert } from 
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { useSignInMutation } from '../../server/servicesFireBase/credencialesApi';
-import { setUser } from '../features/User/UserSlice';
+import { setUser } from '../slice/User/AuthSlice';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -17,7 +17,7 @@ const Login = () => {
             const { idToken, displayName, email, localId } = result.data;
             dispatch(setUser({ displayName, email, idToken, localId }));
             navigation.navigate('Inicio', { usuario: result.data, showTabNavigator: true });
-            //console.log("1 - datos que vienen con el result", result.data);
+            console.log("1 - datos que vienen con el result", result.data);
         } else if (result.isError) {
             Alert.alert('Error', 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
             console.log("Error:", result.status);

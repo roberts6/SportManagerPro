@@ -12,41 +12,15 @@ const DetalleJugador = ({ route }) => {
     const { jugador } = route.params; 
     const navigation = useNavigation();
 
-    const {localId} = jugador;
-    console.log("localId que trae jugador",localId) // trae correctamente el localId que tiene almacenado
-    
-    const fotoPerfil = useGetFotoPerfilQuery(localId)
-    //console.log("foto que trae jugador",fotoPerfil.currentData) 
+    const {key, localId, profileImageURI} = jugador;
 
-    
-    // tampoco funciona. Revisar!!!
-    const profileImage = ( fotoPerfil ) => {
-  
-        let imageSource = Avatar; 
-        
-        
-        if (fotoPerfil && fotoPerfil.currentData) {
-          
-          let fotoData;
-          try {
-            fotoData = JSON.parse(fotoPerfil.currentData);
-          } catch (error) {
-            console.error("Error parsing json: ", error);
-          }
-          
+   console.log("foto del jugador -->",profileImageURI)
 
-          if (fotoData && fotoData.Image) {
-            imageSource = { uri: fotoData.Image };
-          }
-        }
-      
-        return (
-          <Image
-            source={imageSource}
-            style={styles.image}
-          />
-        );
-      };
+   const isValidURI = typeof profileImageURI === 'string' && profileImageURI.length > 3;
+
+    // Use the profile image if valid, otherwise default to Avatar
+    const imageSource = isValidURI ? { uri: profileImageURI } : Avatar;
+
 
     if (!jugador) {
         return (
@@ -75,11 +49,13 @@ const DetalleJugador = ({ route }) => {
             <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{jugador.nombre} {jugador.apellido}</Text>
             {/* <Image source={jugador.profileImageURI ? { uri: jugador.profileImageURI } : Avatar} style={styles.image} />
              */}
-             <Image source={fotoPerfil.currentData ? { uri:fotoPerfil.currentData } : Avatar} style={styles.image} />
+             {/* <Image source={jugador.profileImageURI ? { uri: jugador.profileImageURI } : Avatar} style={styles.image} /> */}
+             <Image source={imageSource} style={styles.image} /> 
             {/* {profileImage()} */}
             <Text style={styles.text}>{jugador.club}</Text>
             <Text style={styles.text}>Fecha de nacimiento: {fechaFormateada}</Text>
             <Text style={styles.text}>Edad: {jugador.edad}</Text>
+            <Text style={styles.text}>DNI: {jugador.dni}</Text>
             <Text style={styles.text}>Categoría: {jugador.categoria}</Text>
             <Text style={styles.text}>Género: {jugador.genero}</Text>
             <Text style={styles.text}><Text>Habilitado: </Text><Text style={{ fontWeight: 'bold' }}>{jugador.habilitado === 1 ? "Sí" : "No"}</Text></Text>

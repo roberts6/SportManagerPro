@@ -2,9 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import { ApiJugadores } from "../servicesFireBase/services";
 import { AuthApi } from "../servicesFireBase/credencialesApi.js";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import planillaJugadoresSlice from "../../client/features/planillaJugadores/planillaJugadores";
-import authReducer from '../../client/features/User/UserSlice.js'
-import usuarioReducer from "../../client/features/User/SliceConKey.js";
+import planillaJugadoresSlice from "../../client/slice/planillaJugadores/planillaJugadores.js";
+import authReducer from '../../client/slice/User/AuthSlice.js'
+import usuarioReducer from "../../client/slice/User/SliceConKey.js";
 
 const store = configureStore({
     reducer:{

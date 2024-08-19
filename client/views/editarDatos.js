@@ -10,11 +10,12 @@ import { useSelector } from 'react-redux';
 const EditarDatos = ({route, navigation}) => {
     const { completeUsuarioDatos } = route.params;
     //console.log("3 - objeto recibido en editar", completeUsuarioDatos)
-    const {localId: localDelUsuario} = completeUsuarioDatos;
+    //const {localId: localDelUsuario} = completeUsuarioDatos;
+    //console.log("esta es la key?",completeUsuarioDatos.id)
 
     const { data: dataClubes } = useGetClubesQuery();
     const {localId} = useSelector((state) => state.auth.value)
-    console.log("localId",localId,"localDelUsuario", localDelUsuario)
+    //console.log("localId",localId)
 
     const [datosUsuario, setDatosUsuario] = useState(completeUsuarioDatos);
     const [mostrarClubesDropdown, setMostrarClubesDropdown] = useState(false);
@@ -137,8 +138,8 @@ if (!fecha_nacimiento) {
     }
         try {
             if (datosUsuario.rol === "Jugador") {
-                await triggerPutJugador({ datosUsuario, localId });
-                console.log("esto se envía con modificaciones",datosUsuario, 'id enviado al service:', localId)
+                await triggerPutJugador({ datosUsuario, id });
+                console.log("esto se envía con modificaciones",datosUsuario, 'id enviado al service:', id)
                 alert('Datos editados exitosamente');    
             } else if (datosUsuario.rol === "Delegado") {
                 //await triggerPutDelegado(datosUsuario, id);
@@ -165,17 +166,15 @@ if (!fecha_nacimiento) {
 
     const { nombre, apellido, dni, fecha_nacimiento, profileImageURI, genero, telefono, direccion, email: emailUsuario, club, telefono_emergencia, prestador_servicio_emergencia, password, confirmacionPassword } = datosUsuario;
 
+    const isValidURI = typeof profileImageURI === 'string' && profileImageURI.length > 3;
+
+  const imageSource = isValidURI ? { uri: profileImageURI } : Avatar;
+
     return (
         <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
             <View>
-                {
-profileImageURI? (
-    <Image source={{uri: profileImageURI}} style={styles.imagen} />
-):(
-    <Image source={Avatar} style={styles.imagen} />
-)
-                }
+            <Image source={imageSource} style={styles.imagen} />
             </View>
             <Pressable
               style={({ pressed }) => [

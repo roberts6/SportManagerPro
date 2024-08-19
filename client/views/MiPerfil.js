@@ -5,13 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Colores } from '../features/utilidades/colores';
 import Avatar from '../imagenes/avatarX.png'
 import { useSelector } from 'react-redux';
-import { useGetFotoPerfilQuery } from '../../server/servicesFireBase/services';
 
 export default function MiPerfil({ route, navigation }) {
   const { completeUsuarioDatos } = route.params;
-  const {localId} = useSelector((state) => state.auth.value)
-  const {data: imageFromDataBase} = useGetFotoPerfilQuery(localId)
-  console.log("Mi perfil localId", localId)
+  const {localId, imageCamera} = useSelector((state) => state.auth.value)
+  //console.log("Mi perfil localId", localId)
+  console.log("imageCamera en Mi Perfil -->",imageCamera)
 
   if (!completeUsuarioDatos) {
       return (
@@ -27,6 +26,10 @@ export default function MiPerfil({ route, navigation }) {
 
   const fechaFormateada = moment(fecha_nacimiento).format('DD/MM/YYYY');
 
+  const isValidURI = typeof profileImageURI === 'string' && profileImageURI.length > 3;
+
+  const imageSource = isValidURI ? { uri: profileImageURI } : Avatar;
+
 //   const handleEditarUsuarioPress = () => {
 //     navigation.navigate('Editar datos', { completeUsuarioDatos, navigation }); // envía el objeto completo y navigation a Editar 
 //     console.log("2 - este el objeto completo que manda Mi Perfil a editar", completeUsuarioDatos);
@@ -36,7 +39,7 @@ export default function MiPerfil({ route, navigation }) {
     <View style={styles.container}>
       <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 18 }}>{nombre} {apellido}</Text>
       {profileImageURI ? (
-        <Image source={{ uri: profileImageURI }} style={styles.image} />
+         <Image source={imageSource} style={styles.image} />
       ) : (
         <Image source={Avatar} style={styles.image} />
       )}

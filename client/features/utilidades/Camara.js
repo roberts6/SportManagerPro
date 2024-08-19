@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Pressable, Text } from 'react-native';
 import Avatar from '../../imagenes/avatarX.png'; 
 import { Colores } from './colores';
 import * as ImagePicker from 'expo-image-picker';
-import { setCameraImage } from '../User/UserSlice'; // viene de UserSlice.js dentro de User
+import { setCameraImage } from '../../slice/User/AuthSlice'; // viene de UserSlice.js dentro de User
 import { useDispatch, useSelector } from 'react-redux'; // permite ejecutar el dispach para la función en el slice
 import { usePostFotoPerfilMutation } from '../../../server/servicesFireBase/services';
 

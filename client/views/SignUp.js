@@ -186,9 +186,8 @@ const SignUp = () => {
             return;
         }
     
+        const generatedId = generateRandomId();
         try {
-            const generatedId = generateRandomId();
-    
             const usuarioComun = {
                 id: generatedId,
                 localId: localId,
@@ -215,7 +214,8 @@ const SignUp = () => {
                     ...usuarioComun,
                     categoria: calcularCategoria(dato.fecha_nacimiento)
                 };
-                await triggerPostJugador(jugador);
+                console.log("datos del nuevo jugador",jugador)
+                await triggerPostJugador(jugador, jugador.id);
             } else if (dato.rol === 'Delegado') {
                 const delegado = { ...usuarioComun };
                 await triggerPostDelegado(delegado);

@@ -62,29 +62,29 @@ export const ApiJugadores = createApi({
         }),
                 postJugador: builder.mutation({
             query: (jugador) => ({
-                url: 'Jugadores.json',
-                method: 'POST',
+                url: `Jugadores/${jugador.id}.json`,
+                method: 'PUT',
                 body: jugador
             }),
         }),
         postDelegado: builder.mutation({
             query: (delegado) => ({
-                url: 'Delegados.json',
-                method: 'POST',
+                url: `Delegados/${delegado.id}.json`,
+                method: 'PUT',
                 body: delegado
             }),
         }),
         postEntrenador: builder.mutation({
             query: (entrenador) => ({
-                url: 'Entrenadores.json',
-                method: 'POST',
+                url: `Entrenadores/${entrenador.id}.json`,
+                method: 'PUT',
                 body: entrenador
             }),
         }),
         putJugadorId: builder.mutation({
-            query: ({datosUsuario, localId}) => ({
-                url: `Jugadores/${localId}.json`,
-                method: 'PUT',
+            query: ({datosUsuario, id}) => ({
+                url: `Jugadores/${id}.json`,
+                method: 'PATCH',
                 body: datosUsuario
             }),
         }),

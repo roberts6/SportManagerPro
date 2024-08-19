@@ -7,9 +7,9 @@ import Avatar from '../imagenes/avatarX.png'
 
 const useUsuarioCompleto = (email) => {
     const usuarioDatos = useBusquedaXmail(email); 
-    const usuarioConKey = useSelector((state) => state.usuarios.usuarios) 
+    const usuarioConKey = useSelector((state) => state.auth.value.localId) 
   
-    // console.log("INICIO",usuarioConKey)
+    console.log("INICIO",usuarioConKey)
   
     // console.log("KEY en INICIO",key)
   

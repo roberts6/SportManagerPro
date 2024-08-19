@@ -12,6 +12,12 @@ const Inicio = ({ route, navigation }) => {
   const completeUsuarioDatos = useUsuarioCompleto(email) // custom Hook que agrega dirección y foto 
   //console.log("qué trae completeUsuarioDatos en INICIO", completeUsuarioDatos)
 
+  const profileImageURI = completeUsuarioDatos.profileImageURI
+
+  const isValidURI = typeof profileImageURI === 'string' && profileImageURI.length > 3;
+
+  const imageSource = isValidURI ? { uri: profileImageURI } : Avatar;
+
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
@@ -22,7 +28,7 @@ const Inicio = ({ route, navigation }) => {
             <Text style={styles.greeting}>Sin datos del usuario...</Text>
           )}
           <View style={styles.vista}>
-            <Image source={completeUsuarioDatos.profileImageURI ? { uri: completeUsuarioDatos.profileImageURI } : Avatar} style={styles.image} />
+            <Image source={imageSource} style={styles.image} />
           </View>
           <View style={styles.buttons}>
               <Pressable

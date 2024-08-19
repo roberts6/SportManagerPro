@@ -18,18 +18,18 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
     return (
         <Stack.Navigator initialRouteName='Credenciales'>
-            <Stack.Screen name="Credenciales" component={AuthStackNavigator} />
-            <Stack.Screen name="Inicio" component={Inicio} />
-            <Stack.Screen name='Datos usuario' component={TabNavigator} />
-            <Stack.Screen name="Agregar Jugador" component={CrearJugador} />
-            <Stack.Screen name="Editar datos" component={EditarDatos} />
-            <Stack.Screen name="Mi Perfil" component={MiPerfil} />
-            <Stack.Screen name="Clubes" component={Clubes} />
-            <Stack.Screen name="Jugadores" component={Jugadores} />
-            <Stack.Screen name="Información Jugador" component={DetalleJugador} />
-            <Stack.Screen name="Estadísticas" component={Estadisticas} />
-            <Stack.Screen name="Camara" component={Camara} />
-            <Stack.Screen name="Location" component={LocationSelector} />
+            <Stack.Screen name="Credenciales" component={AuthStackNavigator}/>
+            <Stack.Screen name="Inicio" component={Inicio}/>
+            <Stack.Screen name='Datos usuario' component={TabNavigator}/>
+            <Stack.Screen name="Agregar Jugador" component={CrearJugador}/>
+            <Stack.Screen name="Editar datos" component={EditarDatos}/>
+            <Stack.Screen name="Mi Perfil" component={MiPerfil}/>
+            <Stack.Screen name="Clubes" component={Clubes}/>
+            <Stack.Screen name="Jugadores" component={Jugadores}/>
+            <Stack.Screen name="Información Jugador" component={DetalleJugador}/>
+            <Stack.Screen name="Estadísticas" component={Estadisticas}/>
+            <Stack.Screen name="Camara" component={Camara}/>
+            <Stack.Screen name="Location" component={LocationSelector}/>
         </Stack.Navigator>
     );
 };
